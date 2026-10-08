@@ -358,8 +358,10 @@ func _clock(lv, p: Player) -> bool:
 			var to := spot - pos; to.y = 0
 			p.auto_move = to.normalized() if to.length() > 0.4 else Vector3.ZERO
 			if to.length() < 2.6 and p.is_on_floor() and spot.y > pos.y + 0.3: _press("jump", 0.35)
-			if to.length() < 0.6 and abs(spot.y - pos.y) < 0.8: clock_phase = 2; _log("clock: riding")
-			if ct > 2.6 and clock_phase == 1: clock_phase = 0; _log("clock: missed the hand, waiting for the next one")
+			var on_hand := p.is_on_floor() and pos.y > _seg_pos(37).y + 0.5
+			if act_cd.get("hdbg", 0.0) < t: act_cd["hdbg"] = t + 0.4; _log("board: pos=%s spot=%s d=%.2f floor=%s ct=%.1f" % [pos.snapped(Vector3.ONE*0.1), spot.snapped(Vector3.ONE*0.1), to.length(), p.is_on_floor(), ct])
+			if (to.length() < 0.6 and abs(spot.y - pos.y) < 0.8) or on_hand: clock_phase = 2; _log("clock: riding")
+			if ct > 3.2 and clock_phase == 1: clock_phase = 0; _log("clock: missed the hand, waiting for the next one")
 		2:   # ride: stay on the hand's tip spot
 			var spot := h.global_transform * Vector3(0, 0.6, -4.5)
 			var to := spot - pos; to.y = 0

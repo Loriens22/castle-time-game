@@ -1175,3 +1175,18 @@ func dbg_repro_tuesdays() -> void:
 	for i in 16:
 		await get_tree().create_timer(1.0).timeout
 		print("REPRO t+%d in_cs=%s locked=%s letterbox=%s guard_valid=%s" % [i, in_cs, player.input_locked, G.ui.cutscene_on, is_instance_valid(g)])
+
+## debug: jump height at the current frame rate (run with --fixed-fps N ... --do=dbg_jump@40; not a fix, a measuring tool)
+func dbg_jump() -> void:
+	for hold in [0.1, 0.35, 0.6]:
+		var y0 := player.global_position.y; var top := y0
+		Input.action_press("jump")
+		var t := 0.0
+		while t < 1.6:
+			await get_tree().physics_frame
+			t += get_physics_process_delta_time()
+			if t > hold and Input.is_action_pressed("jump"): Input.action_release("jump")
+			top = maxf(top, player.global_position.y)
+		print("JUMP hold=%.2f fps=%d height=%.2f" % [hold, Engine.get_frames_per_second(), top - y0])
+		await get_tree().create_timer(0.5).timeout
+	get_tree().quit()
