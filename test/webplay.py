@@ -8,10 +8,12 @@ from playwright.sync_api import sync_playwright
 
 ap = argparse.ArgumentParser()
 ap.add_argument('url'); ap.add_argument('--gargs', default=''); ap.add_argument('--minutes', type=float, default=60)
+ap.add_argument('--nobot', action='store_true', help='no in-game bot (just the given args + real taps)')
+ap.add_argument('--dpr', type=float, default=2.0)
 ap.add_argument('--shots', type=float, default=0, help='screenshot every N s to /tmp/wp_<t>.png')
 a = ap.parse_args()
 HOOK = open(__file__.rsplit('/', 1)[0] + '/audiocheck.py').read().split('HOOK = r"""')[1].split('"""')[0]
-gargs = ['--', '--bot', '--trace'] + a.gargs.split()
+gargs = ['--'] + ([] if a.nobot else ['--bot']) + ['--trace'] + a.gargs.split()
 args = ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist', '--autoplay-policy=user-gesture-required']
 state = {'in_cs': False, 'done': False, 'errors': 0, 'stalls': 0, 'wd': 0, 'last': time.time()}
 def on_console(m):
@@ -24,11 +26,11 @@ def on_console(m):
         if 'SCRIPT ERROR' in line or m.type == 'error' and 'favicon' not in line: state['errors'] += 1
         if ' STALL ' in line: state['stalls'] += 1
         if 'WATCHDOG' in line: state['wd'] += 1
-        if 'DONE - back on the title' in line: state['done'] = True
+        if 'DONE - back on the title' in line or 'REPRO t+15' in line: state['done'] = True
 T0 = time.time()
 with sync_playwright() as p:
     b = p.chromium.launch(executable_path='/usr/bin/google-chrome', headless=True, args=args)
-    ctx = b.new_context(viewport={'width': 844, 'height': 390}, device_scale_factor=2, is_mobile=True, has_touch=True,
+    ctx = b.new_context(viewport={'width': 844, 'height': 390}, device_scale_factor=a.dpr, is_mobile=True, has_touch=True,
                         user_agent='Mozilla/5.0 (Linux; Android 14; Pixel 8) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Mobile Safari/537.36')
     ctx.add_init_script(HOOK)
     def _rw(route):
