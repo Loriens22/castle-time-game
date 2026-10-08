@@ -306,3 +306,13 @@ func post_credits() -> void:
 	await cs_wait(5.5)
 	cs_end()
 	G.main.to_title()
+
+func dbg_mats() -> void:
+	for n in find_children("*", "MeshInstance3D", true, false):
+		var mi := n as MeshInstance3D
+		if mi.mesh == null: continue
+		for i in mi.mesh.get_surface_count():
+			var m := mi.mesh.surface_get_material(i)
+			if m and m.resource_name.begins_with("D_"):
+				var o := mi.get_surface_override_material(i)
+				print("MAT ", mi.name, " ", m.resource_name, " -> ", o.resource_name if o else "NONE", " tex=", (o as StandardMaterial3D).albedo_texture.resource_path if o and (o as StandardMaterial3D).albedo_texture else "-")

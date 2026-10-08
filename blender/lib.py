@@ -65,9 +65,33 @@ def subsurf(o, lvl=1):
     md = o.modifiers.new('sub', 'SUBSURF'); md.levels = lvl; md.render_levels = lvl
     apply_mods(o); smooth(o, 180); return o
 
+def decal_uv(o):
+    """planar UVs so every side of a decal-carrying mesh shows the whole image upright and unmirrored
+    (Blender's default cube unwrap only gives each face a quarter-size island of the texture)"""
+    import bmesh
+    from mathutils import Vector
+    me = o.data; bm = bmesh.new(); bm.from_mesh(me)
+    uvl = bm.loops.layers.uv.verify()
+    vs = [v.co for v in bm.verts]
+    lo = Vector((min(v.x for v in vs), min(v.y for v in vs), min(v.z for v in vs)))
+    hi = Vector((max(v.x for v in vs), max(v.y for v in vs), max(v.z for v in vs)))
+    ext = hi - lo
+    for f in bm.faces:
+        n = f.normal; ax = max(range(3), key=lambda i: abs(n[i])); sg = 1 if n[ax] > 0 else -1
+        if ax == 2: ru, rv, fu = 0, 1, (sg < 0)      # top/bottom: u = x, v = +-y
+        elif ax == 1: ru, rv, fu = 0, 2, (sg > 0)    # +-y faces: u = -+x
+        else: ru, rv, fu = 1, 2, (sg < 0)            # +-x faces: u = +-y
+        for l in f.loops:
+            c = l.vert.co
+            u = (c[ru] - lo[ru]) / max(ext[ru], 1e-6); v = (c[rv] - lo[rv]) / max(ext[rv], 1e-6)
+            if ax == 2 and sg < 0: v = 1 - v
+            l[uvl].uv = (1 - u if fu else u, v)
+    bm.to_mesh(me); bm.free()
+
 def _fin(o, m, bev=0, seg=2, sm=False, name=None):
     if bev: bevel(o, bev, seg)
     elif sm: smooth(o)
+    if m is not None and getattr(m, 'name', '').startswith('D_'): decal_uv(o)
     setmat(o, m)
     if name: o.name = name
     return o

@@ -41,7 +41,9 @@ static func convert_mat(m: Material, world: bool) -> Material:
 		var t := nm.substr(2).split("#")[0]
 		var tx := tex(t)
 		if tx == null and t.begins_with("chainmail"): tx = tex("chainmail")
-		if tx == null: return m
+		if tx == null:
+			if OS.is_debug_build(): print("MATLIB missing decal ", nm)
+			return m
 		var s := StandardMaterial3D.new()
 		s.resource_name = nm
 		s.albedo_texture = tx
@@ -63,14 +65,16 @@ static func convert_mat(m: Material, world: bool) -> Material:
 		return s
 	if nm.begins_with("D_"):
 		var tx := tex(nm.substr(2))
-		if tx == null: return m
+		if tx == null:
+			if OS.is_debug_build(): print("MATLIB missing decal ", nm)
+			return m
 		var s := StandardMaterial3D.new()
 		s.resource_name = nm
 		s.albedo_texture = tx
 		s.roughness = 0.85
 		s.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS_ANISOTROPIC
 		if base.emission_enabled:
-			s.emission_enabled = true; s.emission_texture = tx; s.emission = Color.WHITE; s.emission_energy_multiplier = 1.4
+			s.emission_enabled = true; s.emission_texture = tx; s.emission = Color.BLACK; s.emission_operator = BaseMaterial3D.EMISSION_OP_ADD; s.emission_energy_multiplier = 1.4   # (ADD: colour + texture, so the colour must be black)
 			s.albedo_color = Color(0.2, 0.2, 0.2)
 		return s
 	if nm == "fire" or nm == "fireball":
