@@ -95,9 +95,10 @@ func _movers() -> void:
 			var body := AnimatableBody3D.new()
 			body.name = nm + "_body"
 			body.collision_layer = 1; body.collision_mask = 0
-			body.sync_to_physics = true
+			body.sync_to_physics = false   # (true makes Godot revert direct transform writes until a physics sync)
+			var gt: Transform3D = n.global_transform
 			add_child(body)
-			body.global_transform = n.global_transform
+			body.global_transform = gt
 			n.reparent(body, false)
 			n.transform = Transform3D.IDENTITY
 			for s in shapes[nm]:
@@ -107,6 +108,9 @@ func _movers() -> void:
 		else:
 			movers[nm] = n
 	if movers.has("X-clockhand"): movers["X-clockhand"].global_position.y = 12.35
+	if "--movers" in OS.get_cmdline_user_args():
+		get_tree().create_timer(2.0).timeout.connect(func():
+			for k in movers: print("MOVER ", k, " ", movers[k].global_position.snapped(Vector3.ONE * 0.1), " rot ", movers[k].rotation.snapped(Vector3.ONE * 0.01)))
 
 func _spawn_static() -> void:
 	# fx
@@ -1091,3 +1095,13 @@ func _title_update(dt: float) -> void:
 	var p := c + Vector3(sin(title_t) * 70.0, 22.0 + sin(title_t * 0.7) * 6.0, cos(title_t) * 70.0)
 	cs_cam.global_position = p
 	cs_cam.look_at(c + Vector3(8, 8, -10), Vector3.UP)
+
+## debug: ride the clock hand from its start position and report where the player ends up
+func dbg_ride() -> void:
+	var h: Node3D = movers["X-clockhand"]
+	while fmod(clock_t, 19.0) > 0.6 or fmod(clock_t, 19.0) < 0.3: await get_tree().physics_frame
+	var spot := h.global_transform * Vector3(0, 0.6, -4.5)
+	player.teleport(spot, player.yaw)
+	for k in 10:
+		await get_tree().create_timer(1.0).timeout
+		print("RIDE t=%.1f pos=%s floor=%s" % [fmod(clock_t, 19.0), str(player.global_position.snapped(Vector3.ONE * 0.1)), player.is_on_floor()])

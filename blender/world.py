@@ -327,7 +327,7 @@ def castle():
     return [P.join(), I.join()]
 
 # ============================================================ KEEP (exterior shell + interior)
-KX0, KX1, KY0, KY1 = -24, 20, 50, 74
+KX0, KX1, KY0, KY1 = -24, 17.5, 50, 74   # east wall stays clear of the spire's spiral ledge (TX - 8.1 = 18.9)
 def keep():
     P = Part('R-keep'); I = Part('R-hall'); E = Part('R-eastwing')
     H = 15
@@ -387,6 +387,7 @@ def keep():
     I.add(overlay(I, -20, 0, 52, 72, RUG, 0.01) or [])
     # throne dais (north)
     I.add(solid(8, 3, 0.6, (-9, 72.2, 0.3), STONE_D)); thr = [box(1.4, 1.0, 0.6, (0, 0, 0.9), WOOD_D), box(1.4, 0.2, 2.4, (0, 0.45, 1.8), WOOD_D), box(1.0, 0.05, 1.6, (0, 0.33, 1.9), CLOTH_R)]
+    stairs(I, -11, -7, 69.1, 70.75, 0, 0.6, STONE_D)   # steps up to the dais
     I.add(place(thr, -9, 72.4)); colbox(1.4, 1.0, 1.2, (-9, 72.4, 0.6)); mk('M-it-throne', (-9, 71.2, 1.0))
     # fireplace west wall
     I.add(box(1.0, 4.4, 4.0, (KX0 + 0.5, 64, 2.0), STONE_D), box(0.6, 3.0, 2.2, (KX0 + 0.75, 64, 1.1), SOOT), box(1.4, 4.8, 0.4, (KX0 + 0.7, 64, 4.1), STONE_D))
@@ -429,7 +430,7 @@ def keep():
     for k in range(4): E.add(*barrel(3.2, 63.5 + k * 0.9, 0, 0.9)); 
     colbox(1, 3.6, 0.9, (3.2, 64.85, 0.45))
     for k in range(5): E.add(cyl(0.04, 0.6, (6 + k * 0.6, KY1 - 0.4, 3.5), ROPE, v=4), sph(0.16, (6 + k * 0.6, KY1 - 0.4, 3.1), M('ham', '#a0603a', 0.6), s=(1, 1, 1.4)))
-    mk('M-an-cat-kitchen', (8, 71, 0), 200); mk('M-it-cat_kitchen', (8, 71, 0.3)); mk('M-pk-roast-k0', (10, 69.5, 1.0)); mk('M-col-phonecase-kitchen', (17.5, 63, 0.2))
+    mk('M-an-cat-kitchen', (8, 71, 0), 200); mk('M-it-cat_kitchen', (8, 71, 0.3)); mk('M-pk-roast-k0', (10, 69.5, 1.0)); mk('M-col-phonecase-kitchen', (15.4, 63.4, 0.2))
     mk('M-en-cook-kitchen-0', (12, 66, 0), 90)
     for i, p in enumerate([(5, 70), (14, 72)]): mk('M-pr-pot-k%d' % i, (*p, 0))
     E.add(torch_bracket(2.4, 58, 3.0, -90)); mk('M-fx-torch-l0', (2.7, 58, 3.45))
@@ -489,10 +490,10 @@ def spire():
     # bucket lift (Maestro's invention) bridging gap 129-130
     # top terrace
     # terrace slab with an arc-shaped opening where the ledge arrives from below (south-west quadrant)
-    P.add(cyl(TR, 1.0, (TX, TY, TH + 0.5), STONE_D, v=32)); colbox(TR * 1.38, TR * 1.38, 1.0, (TX, TY, TH + 0.5))
+    P.add(cyl(TR, 1.0, (TX, TY, TH + 0.5), STONE_D, v=32)); [colbox(TR * 2, TR * 2 * math.tan(math.pi / 16), 1.0, (TX, TY, TH + 0.5), (0, 0, k * math.pi / 8)) for k in range(8)]   # 16-gon disc
     for k in range(40):
         a = (k + 0.5) * 2 * math.pi / 40; ad = math.degrees(a)
-        ri = 8.45 if 156 <= ad <= 294 else TR - 0.2
+        ri = 8.45 if 156 <= ad <= 286 else TR - 0.2
         ro = TR + 4.5; rmid = (ri + ro) / 2; L = 2 * math.pi * ro / 40 + 0.1
         P.add(box(ro - ri, L, 1.0, (TX + math.cos(a) * rmid, TY + math.sin(a) * rmid, TH + 0.5), STONE_D, rot=(0, 0, a)))
         colbox(ro - ri, L, 1.0, (TX + math.cos(a) * rmid, TY + math.sin(a) * rmid, TH + 0.5), (0, 0, a))
@@ -503,7 +504,7 @@ def spire():
     for k in range(48):
         a = k / 48 * 2 * math.pi; colbox(1.4, 0.4, 3, (TX + math.cos(a) * (TR + 4.4), TY + math.sin(a) * (TR + 4.4), TH + 2.5), (0, 0, a + math.pi / 2)) if abs(math.atan2(math.sin(a + math.pi / 2), math.cos(a + math.pi / 2))) > 0.2 else None
     for k in range(32): P.add(box(0.6, 0.8, 0.8, (TX + math.cos(k * math.pi / 16) * (TR + 4.2), TY + math.sin(k * math.pi / 16) * (TR + 4.2), TH - 0.3), STONE_D, rot=(0, 0, k * math.pi / 16)))
-    for ad in (-65, -10, 45, 100, 145):  # spire roof on 5 pillars (none over the ledge opening 156..294 deg)
+    for ad in (-30, 25, 80, 135):  # spire roof pillars: none over the ledge opening / exit (150..320 deg)
         a = math.radians(ad); pillar(P, TX + math.cos(a) * 6.2, TY + math.sin(a) * 6.2, TH + 1, 8, 0.5, STONE)
     P.add(cyl(8.2, 1.0, (TX, TY, TH + 9.5), STONE_D, v=32), cyl(8.0, 14, (TX, TY, TH + 17), TILE, v=32, r2=0.1), sph(0.5, (TX, TY, TH + 24.3), GOLD))
     P.add(box(0.3, 0.3, 4, (TX, TY, TH + 26), GOLD)) 

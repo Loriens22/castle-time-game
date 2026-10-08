@@ -7,7 +7,7 @@ signal died
 const SPEED := 6.6
 const AIM_SPEED := 4.6
 const GRAV := 22.0
-const JUMP := 8.6
+const JUMP := 9.0
 const ROLL_SPEED := 11.0
 const ROLL_TIME := 0.45
 const FIRE_RATE := 7.5
@@ -255,6 +255,7 @@ func _physics_process(dt: float) -> void:
 		Audio.sfx("jump", -8, randf_range(0.95, 1.05))
 	if velocity.y > 0 and not Input.is_action_pressed("jump") and not G.ui.touch_jump_held and air_time > 0.08:
 		velocity.y -= GRAV * dt * 1.2   # variable jump height
+	if on_floor and velocity.y <= 0.01: _step_up(dt)
 	move_and_slide()
 	# push physics props
 	for i in get_slide_collision_count():
@@ -470,3 +471,23 @@ func zip(a: Vector3, b: Vector3) -> void:
 	velocity = (b - a).normalized() * 4.0
 	velocity.y = 2.0
 	fall_start_y = global_position.y
+
+## climbs small ledges (thresholds, planks, kerbs) up to STEP_H high instead of stopping dead
+const STEP_H := 0.42
+func _step_up(dt: float) -> void:
+	var hv := Vector3(velocity.x, 0, velocity.z)
+	if hv.length() < 0.5: return
+	var ahead := hv.normalized() * maxf(hv.length() * dt, 0.12)
+	var t := global_transform
+	var col := KinematicCollision3D.new()
+	if not test_move(t, ahead, col): return            # nothing in the way
+	if col.get_normal().y > 0.7: return                  # it's a slope we can already walk
+	if test_move(t, Vector3(0, STEP_H, 0)): return       # no headroom
+	t.origin.y += STEP_H
+	if test_move(t, ahead): return                       # too tall: a real wall
+	t.origin += ahead
+	var down := KinematicCollision3D.new()
+	if test_move(t, Vector3(0, -STEP_H - 0.05, 0), down) and down.get_normal().y > 0.7:
+		var rise := t.origin.y + down.get_travel().y - global_position.y
+		if rise > 0.02:
+			global_position = t.origin + down.get_travel() - ahead * 0.5

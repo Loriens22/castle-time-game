@@ -67,13 +67,14 @@ func _walk_later(spec: String) -> void:
 		var tgt: Vector2 = pts[idx][0]
 		var d := Vector2(p.global_position.x, p.global_position.z).distance_to(tgt)
 		if d < best - 0.05: best = d; t_best = t
-		if pts[idx][1] == "j" and d < 1.6 and p.is_on_floor(): Input.action_press("jump"); await get_tree().physics_frame; Input.action_release("jump")
+		if pts[idx][1] == "j" and d < 1.6 and p.is_on_floor(): Input.action_press("jump"); get_tree().create_timer(0.35).timeout.connect(func(): Input.action_release("jump"))
 		if pts[idx][1] == "r" and d < 3.2 and p.is_on_floor() and p.roll_t <= 0.0: Input.action_press("roll"); await get_tree().physics_frame; Input.action_release("roll")
 		if d < 0.7:
 			if pts[idx][1] == "w":
 				p.auto_move = Vector3.ZERO
 				await get_tree().create_timer(5.0).timeout
 				t += 5.0
+			if "--walkv" in OS.get_cmdline_user_args(): print("  wp ", idx, " reached at ", p.global_position.snapped(Vector3.ONE * 0.1))
 			idx += 1; best = INF; t_best = t
 			continue
 		var dir := Vector3(tgt.x - p.global_position.x, 0, tgt.y - p.global_position.z).normalized()
