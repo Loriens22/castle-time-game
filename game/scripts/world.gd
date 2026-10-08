@@ -507,7 +507,9 @@ func refresh_objective() -> void:
 			ch = "CASTLE COURTYARD"
 			if G.flag("grate_done"): t = "Climb the clock spire"; wp = mpos("M-tr-spire")
 			elif G.flag("grate_call"): t = "Find the voice by the grate near the keep"; wp = mpos("M-it-grate")
-			else: t = "Fight through the castle guard"
+			else:
+				t = "Fight through the castle guard"
+				if not fired.has("yard"): wp = mpos("M-tr-yard")   # e.g. respawned on the moat side after the bridge fell
 		5, 6: ch = "THE CLOCK SPIRE"; t = "Climb to the top of the spire"; wp = mpos("M-cp-spiretop")
 		7:
 			ch = "THE CLOCK SPIRE"
