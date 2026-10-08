@@ -9,7 +9,7 @@ const STATS := {
 	"peasantf": {"model": "peasant_f", "hp": 25, "speed": 4.5, "dmg": 7, "range": 1.8, "atk": "swing", "tele": 0.4, "cd": 1.2, "weapon": "P-pitchfork", "aggro": 16, "bark": "peas"},
 	"torch": {"model": "peasant", "hp": 30, "speed": 4.0, "dmg": 12, "range": 1.9, "atk": "swing", "tele": 0.5, "cd": 1.4, "weapon": "P-torch", "aggro": 16, "bark": "peas"},
 	"cabbage": {"model": "peasant_f", "hp": 25, "speed": 3.6, "dmg": 8, "range": 17.0, "atk": "throw", "tele": 0.55, "cd": 2.0, "weapon": "P-cabbage", "aggro": 20, "ranged": "cabbage", "keep": 8.0, "bark": "peas"},
-	"guard": {"model": "guard", "hp": 60, "speed": 3.8, "dmg": 12, "range": 2.5, "atk": "thrust", "tele": 0.5, "cd": 1.5, "weapon": "P-spear", "shield": true, "aggro": 22, "bark": "guard"},
+	"guard": {"model": "guard", "hp": 60, "speed": 3.8, "dmg": 10, "range": 2.5, "atk": "thrust", "tele": 0.5, "cd": 1.5, "weapon": "P-spear", "shield": true, "aggro": 22, "bark": "guard"},
 	"archer": {"model": "archer", "hp": 35, "speed": 0.0, "dmg": 10, "range": 42.0, "atk": "bow", "tele": 0.9, "cd": 2.6, "weapon": "P-bow", "aggro": 38, "ranged": "arrow", "bark": "arch", "static": true},
 	"knight": {"model": "knight", "hp": 140, "speed": 3.4, "dmg": 18, "range": 2.4, "atk": "swing", "tele": 0.55, "cd": 1.6, "weapon": "P-sword", "armor": 0.4, "aggro": 24, "charge": true, "bark": "knight"},
 	"cook": {"model": "peasant", "hp": 40, "speed": 4.0, "dmg": 10, "range": 1.9, "atk": "swing", "tele": 0.4, "cd": 1.2, "weapon": "P-cleaver", "aggro": 12, "bark": "peas"},
@@ -128,6 +128,8 @@ func _physics_process(dt: float) -> void:
 			else:
 				var ranged := st.has("ranged")
 				var want_attack: bool = dist < st["range"] and atk_cd <= 0.0 and (not ranged or los)
+				if want_attack and not ranged and _melee_busy() >= 2:
+					want_attack = false; atk_cd = randf_range(0.35, 0.9)   # wait your turn: max 2 melee attackers at once
 				if want_attack and (not ranged or dist > 2.0): go("attack")
 				elif st.get("static", false):
 					face = G.damp_angle(face, atan2(-to.x, -to.z), 6.0, dt)
@@ -348,3 +350,9 @@ func ko() -> void:
 	await get_tree().create_timer(30.0).timeout
 	if is_instance_valid(self) and G.player and G.player.global_position.distance_to(global_position) > 25.0:
 		queue_free()
+
+static func _melee_busy() -> int:
+	var n := 0
+	for e in (Engine.get_main_loop() as SceneTree).get_nodes_in_group("enemies"):
+		if e.state == "attack" and not e.st.has("ranged"): n += 1
+	return n

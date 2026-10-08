@@ -74,7 +74,9 @@ func _cp_pos(cp: String) -> Array:
 	match cp:
 		"escape": return [Vector3(8, -6, -60.5), 0.0]
 		"escape2": return [Vector3(-11, 0, -46.5), PI]
-		"sp0", "sp1", "sp2": return [mpos(CPS[cp][0]) + Vector3(0, 0.3, 0), PI * 0.5]
+		"sp0", "sp1", "sp2":
+			var sp := mpos(CPS[cp][0])
+			return [sp + Vector3(0, 0.3, 0), atan2(-(sp.z - TOWER.z), sp.x - TOWER.x)]   # face up the ledge (counter-clockwise)
 	return [mpos(CPS[cp][0]) + Vector3(0, 0.1, 0), myaw(CPS[cp][0])]
 
 # ------------------------------------------------------------------ construction
@@ -313,6 +315,7 @@ func _on_ko(e: Enemy) -> void:
 			"yard": yard_progress()
 	elif grp == "yard":
 		yard_progress()
+	if grp in ["farm", "green", "yard"]: refresh_objective()   # keep "(N left)" counters live
 
 func group_cleared(grp: String) -> bool:
 	for e in groups.get(grp, []):
