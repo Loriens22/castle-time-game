@@ -265,6 +265,12 @@ func _physics_process(dt: float) -> void:
 		var o := c.get_collider()
 		if o is RigidBody3D:
 			o.apply_central_impulse(-c.get_normal() * 0.6 * Vector3(1, 0, 1).length() + Vector3(velocity.x, 0, velocity.z) * 0.05)
+		elif o is Enemy and c.get_normal().y > 0.5:
+			# never stand on an enemy's head (they can't hit you, you can't shoot them: an endless stalemate) - slide off
+			var away := global_position - (o as Node3D).global_position; away.y = 0
+			if away.length() < 0.05: away = Vector3(sin(yaw), 0, cos(yaw))
+			var push := away.normalized() * 4.5
+			velocity.x = push.x; velocity.z = push.z; velocity.y = maxf(velocity.y, 1.5)
 	# facing
 	var hv := Vector3(velocity.x, 0, velocity.z)
 	if aiming and roll_t <= 0.0:
@@ -470,7 +476,9 @@ func zip(a: Vector3, b: Vector3) -> void:
 		var p := a.lerp(b, v)
 		p.y -= sin(v * PI) * 2.0
 		global_position = p - Vector3(0, 1.9, 0), 0.0, 1.0, t).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
-	await tw.finished
+	await G.wait_for(tw.finished, t + 2.0)
+	if tw.is_valid(): tw.kill()
+	global_position = b - Vector3(0, 1.9, 0)
 	zipping = false
 	input_locked = false
 	velocity = (b - a).normalized() * 4.0

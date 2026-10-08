@@ -197,6 +197,7 @@ func continue_game() -> void:
 	else: load_level("world", {"cp": cp})
 
 func load_level(name: String, args := {}) -> void:
+	while loading: await get_tree().process_frame   # serialize overlapping loads (e.g. a fail-safe recover firing mid-transition)
 	loading = true
 	G.ui.skip_req = false
 	G.ui.letterbox(false, 0.01)

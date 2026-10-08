@@ -59,7 +59,7 @@ func _physics_process(dt: float) -> void:
 					actor.play("swing", 0.1, 0.8, true); actor.flash(Color(1, 0.5, 0.1), 0.4); Audio.sfx3("swing", global_position)
 				if mode_t > 0.65 and not hit_done:
 					hit_done = true
-					var fwd := -actor.global_basis.z
+					var fwd := -actor.global_basis.z.normalized()
 					if dist < 3.3 and fwd.dot(to.normalized()) > 0.2: player.damage(20, global_position)
 				if mode_t > 1.3: _mode("walk")
 			"slam":
@@ -128,7 +128,7 @@ func bell_hit() -> void:
 
 func laser_hit(dmg: float, pos: Vector3, dir: Vector3, n: Vector3) -> String:
 	if state == "down" or not active: return "none"
-	var fwd := -actor.global_basis.z
+	var fwd := -actor.global_basis.z.normalized()   # the actor is scaled
 	var front := fwd.dot(-dir) > 0.15
 	if front and not dazed():
 		# reflect!

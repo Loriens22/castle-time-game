@@ -122,7 +122,7 @@ func _cutscene(lv, p: Player) -> void:
 # ------------------------------------------------------------------ monitor
 func _monitor(lv, p: Player, dt: float) -> void:
 	var key := "%s|%s|%s|%s|%s|%d|%d" % [_lvname(lv), str(lv.get("stage")), str(lv.get("cp_id")), G.ui.obj_lbl.text, str(lv.in_cs), G.save["flags"].size(), G.save["kos"]]
-	if lv.in_cs: key += "|" + str(lv.get("cs_name"))
+	if lv.in_cs: key += "|" + str(lv.get("cs_name")) + "|" + G.ui.sub_lbl.text.left(30)
 	if lv.get("boss") and lv.boss: key += "|%d" % int(lv.boss.hp)
 	if lv.get("chains_left") != null: key += "|%d" % lv.chains_left
 	if key != prog_key:
@@ -229,7 +229,7 @@ func _go(lv, p: Player, goal: Vector3, dt: float, stage: int) -> void:
 		return
 	p.auto_move = to.normalized() if to.length() > 0.05 else Vector3.ZERO
 	# escape: roll under the dropped portcullis
-	if stage == 10 and lv.portcullis_dropped and abs(p.global_position.x) < 3.5 and p.global_position.z > -14.0 and p.global_position.z < -7.0 and p.is_on_floor():
+	if stage == 10 and lv.portcullis_dropped and abs(p.global_position.x) < 3.5 and p.global_position.z > -14.0 and p.global_position.z < -3.0 and p.is_on_floor():
 		_press("roll", 0.05)
 	# unstick: jump, then roll, then sidestep
 	if p.global_position.distance_to(last_pos) < 0.04 * 60.0 * dt * 0.25:
@@ -267,6 +267,11 @@ func _boss_aim(lv, boss, p: Player):
 # ------------------------------------------------------------------ navmesh from the live level
 func _ensure_nav(lv, stage: int) -> void:
 	var key := "%s|%d|%s" % [_lvname(lv), stage, str(lv.get("chains_left"))]
+	var mv = lv.get("movers")
+	if mv is Dictionary:   # doors / gates / portcullis that opened or closed since the last bake
+		for k in mv:
+			if ("gate" in k or "door" in k or "portcullis" in k or "bridge" in k) and is_instance_valid(mv[k]):
+				key += "|%s" % str((mv[k] as Node3D).position.snapped(Vector3.ONE))
 	if key == nav_key: return
 	nav_key = key
 	var t0 := Time.get_ticks_msec()
@@ -310,6 +315,9 @@ func _spiral(lv, p: Player) -> bool:
 		_log("spiral: fell (y=%.1f), starting over" % pos.y); seg = -1; clock_phase = 0; return false
 	var tgt_i := seg + 1
 	while tgt_i in GAPS: tgt_i += 1
+	if act_cd.get("spdbg", 0.0) < t:
+		act_cd["spdbg"] = t + 8.0
+		_log("spiral seg=%d phase=%d ct=%.1f pos=%s" % [seg, clock_phase, fmod(lv.clock_t, 19.0), str(pos.snapped(Vector3.ONE * 0.1))])
 	if seg + 1 >= 38 and seg < 47:
 		return _clock(lv, p)
 	if tgt_i > 145:
@@ -331,7 +339,7 @@ func _clock(lv, p: Player) -> bool:
 			var s37 := _seg_pos(37)
 			var to := s37 - pos; to.y = 0
 			p.auto_move = to.normalized() if to.length() > 0.4 else Vector3.ZERO
-			if to.length() < 1.0 and ct > 0.3 and ct < 1.4:
+			if to.length() < 1.7 and ct > 0.2 and ct < 1.9:
 				clock_phase = 1; _log("clock: boarding the minute hand")
 		1:   # hop onto the hand
 			var spot := h.global_transform * Vector3(0, 0.6, -4.5)
@@ -339,7 +347,7 @@ func _clock(lv, p: Player) -> bool:
 			p.auto_move = to.normalized() if to.length() > 0.4 else Vector3.ZERO
 			if to.length() < 2.6 and p.is_on_floor() and spot.y > pos.y + 0.3: _press("jump", 0.35)
 			if to.length() < 0.6 and abs(spot.y - pos.y) < 0.8: clock_phase = 2; _log("clock: riding")
-			if ct > 2.4 and clock_phase == 1: clock_phase = 0; _log("clock: missed the hand, waiting for the next one")
+			if ct > 2.6 and clock_phase == 1: clock_phase = 0; _log("clock: missed the hand, waiting for the next one")
 		2:   # ride: stay on the hand's tip spot
 			var spot := h.global_transform * Vector3(0, 0.6, -4.5)
 			var to := spot - pos; to.y = 0

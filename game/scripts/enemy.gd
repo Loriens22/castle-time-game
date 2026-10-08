@@ -278,7 +278,7 @@ func _strike(dist: float) -> void:
 		player.shake(0.4)
 		if dist < st["range"] + 1.0: player.damage(st["dmg"], global_position)
 		return
-	var fwd := -actor.global_basis.z
+	var fwd := -actor.global_basis.z.normalized()
 	var to := (player.global_position - global_position); to.y = 0
 	if dist < st["range"] + 0.6 and fwd.dot(to.normalized()) > 0.3 and abs(player.global_position.y - global_position.y) < 1.8:
 		player.damage(st["dmg"], global_position)
@@ -289,7 +289,7 @@ func laser_hit(dmg: float, pos: Vector3, dir: Vector3, n: Vector3) -> String:
 	if state == "down": return "none"
 	if scripted: return "none"
 	if not alerted: alert(true)
-	var fwd := -actor.global_basis.z
+	var fwd := -actor.global_basis.z.normalized()
 	if st.get("shield", false) and state != "stunned" and state != "attack" and fwd.dot(-dir) > 0.45:
 		FX.sparks(pos, -dir, Color(1.0, 0.7, 0.3), 10)
 		Audio.sfx3("clank", pos, -6, randf_range(0.9, 1.1))

@@ -363,7 +363,7 @@ func letterbox(on: bool, t := 0.6) -> void:
 func fade(to: float, t := 0.6) -> void:
 	var tw := create_tween()
 	tw.tween_property(fade_rect, "color:a", to, t)
-	await tw.finished
+	await G.wait_for(tw.finished, t + 1.0)
 
 func flash(col := Color.WHITE, t := 0.6) -> void:
 	flash_rect.color = col

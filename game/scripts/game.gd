@@ -47,6 +47,23 @@ func _ready() -> void:
 func tlog(s: String) -> void:
 	if trace: print("TRACE %7.1f %s" % [Time.get_ticks_msec() / 1000.0, s])
 
+class _Waiter extends RefCounted:
+	signal done
+	var fired := false
+	func fire(_a = null, _b = null, _c = null) -> void:
+		if fired: return
+		fired = true
+		done.emit()
+
+## Fail-safe await: resumes when `sig` fires OR after `timeout` real seconds (also if the emitter is freed,
+## or a tween gets killed and never emits `finished`). Returns immediately-ish in every case.
+func wait_for(sig: Signal, timeout: float) -> void:
+	var w := _Waiter.new()
+	if not sig.is_null() and is_instance_valid(sig.get_object()):
+		sig.connect(w.fire, CONNECT_ONE_SHOT)
+	get_tree().create_timer(maxf(timeout, 0.05), false, false, true).timeout.connect(w.fire)   # paused game = paused fallback
+	if not w.fired: await w.done
+
 func line_dur(id: String) -> float:
 	return float(vo_len.get(id, 2.5))
 

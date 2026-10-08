@@ -232,14 +232,16 @@ func _phone_screen() -> void:
 	for ln in lines:
 		for ch in ln:
 			if skipping(): break
+			if not is_instance_valid(l): return
 			txt += ch; l.text = txt
 			if ch != " ": Audio.sfx("phone_key", -10, randf_range(0.9, 1.2))
 			await get_tree().create_timer(0.035).timeout
+		if not is_instance_valid(l): return
 		txt += "\n"; l.text = txt
 		if skipping(): break
 	Audio.sfx("phone_ok", -4)
 	await cs_wait(max(0.6, G.line_dur("p10") - 3.6))
-	screen_ui.queue_free()
+	if is_instance_valid(screen_ui): screen_ui.queue_free()
 
 # ------------------------------------------------------------------ ending
 func ending() -> void:

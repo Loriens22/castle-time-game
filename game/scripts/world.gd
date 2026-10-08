@@ -363,6 +363,7 @@ func _process(dt: float) -> void:
 		_update_music()
 		_dormancy()
 		_spire_checks()
+		_stranded_enemies()
 	if escape_t >= 0.0 and not in_cs and not player.dead:
 		escape_t -= dt
 		G.ui.show_timer(escape_t)
@@ -896,7 +897,8 @@ func trebuchet_scene() -> void:
 		var p := start.lerp(keep_hit, v); p.y += sin(v * PI) * 14.0
 		fb.global_position = p
 		cs_cam.look_at(p, Vector3.UP), 0.0, 1.0, 1.6)
-	if not skipping(): await ft.finished
+	if not skipping(): await G.wait_for(ft.finished, 2.6)
+	if ft.is_valid(): ft.kill()   # its callback touches fb, which is freed right below
 	if is_instance_valid(fb): fb.queue_free()
 	FX.explosion(keep_hit, 2.5)
 	ignite()
@@ -1003,7 +1005,7 @@ func _drop_beam(spot: Vector3) -> void:
 	beam.global_position = target + Vector3(0, 9, 0); beam.scale = Vector3.ONE * 1.8
 	var f := FX.fire(beam, beam.global_position, 0.8, false)
 	var tw := create_tween(); tw.tween_property(beam, "global_position", target + Vector3(0, 0.2, 0), 0.45).set_ease(Tween.EASE_IN).set_trans(Tween.TRANS_QUAD)
-	await tw.finished
+	await G.wait_for(tw.finished, 1.5)
 	ring.queue_free()
 	FX.explosion(target, 0.6)
 	if player.global_position.distance_to(target) < 2.0: player.damage(22, target)
@@ -1086,6 +1088,21 @@ func _make_flyer() -> Node3D:
 	return n
 
 # ------------------------------------------------------------------ misc
+## an enemy that ends up in the moat trench (pulse knock-back, chasing off the bank) can never climb out or reach
+## the player and may be hidden under the drawbridge - it would keep its group's objective open forever. Count it
+## as knocked out (it's sitting in the water anyway). Same for anything that falls out of the world.
+func _stranded_enemies() -> void:
+	for e in get_tree().get_nodes_in_group("enemies"):
+		if not is_instance_valid(e) or e.defeated or e.state == "down" or e is Boss: continue
+		var q: Vector3 = e.global_position
+		var in_moat := q.y < -1.5 and q.y > -4.5 and q.z > -2.9 and q.z < 4.4 and absf(q.x) < 70.0
+		if in_moat or q.y < -30.0:
+			G.tlog("enemy %s (%s) stranded at %s - counted as knocked out" % [e.kind, e.group, str(q.snapped(Vector3.ONE * 0.1))])
+			if in_moat:
+				Audio.sfx3("splash", q, -4)
+				FX.particles(q + Vector3(0, 0.5, 0), 14, Color(0.6, 0.8, 0.9), 0.6, 4.0, 0.15, -10.0)
+			e.ko()
+
 func fall_in_moat() -> void:
 	if player.input_locked: return
 	player.input_locked = true
