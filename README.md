@@ -6,6 +6,12 @@ A 3D third-person action-comedy game that runs in your browser. Every model, tex
 
 Works in desktop browsers (Chrome, Edge, Firefox) and on phones and tablets with touch controls. Landscape works best on a phone. The download is about 40 MB, so the first load takes a moment.
 
+| | |
+|---|---|
+| ![title](screenshots/01_title.png) | ![phone](screenshots/02_lab_phone_cutscene.png) |
+| ![peasants](screenshots/03_peasant_fight.png) | ![spire](screenshots/05_spire_clock.png) |
+| ![maestro](screenshots/06_dungeon_maestro.png) | ![escape](screenshots/07_fire_escape.png) |
+
 ---
 
 ## Story

@@ -24,8 +24,9 @@ Live: https://loriens22.github.io/castle-time-game/ (gh-pages branch, deployed b
 
 ## Left / in progress
 - DONE: story beats verified (lab→phone→teleport→arrival, peasants cutscene+combat, boss_defeated→zip, keepdoor, dungeon gate, Beppe, cell_scene→trebuchet→escape timer, escape route+roll, finale→ending→credits)
-- Redeploy the latest build, then verify the live URL on desktop and mobile; console check
-- Final screenshots in `screenshots/`
+- DONE: live URL checked in headless Chrome. Desktop: title → New Game → lab. Mobile 844x390 with touch: title → lab, touch UI showing. No console errors.
+- DONE: screenshots in `screenshots/` (01–08)
+- DONE: HUD centring, combat balance (at most 2 melee attackers at once), spire checkpoints face up the ledge
 - Polish: terrain colour/fog, more easter-egg checks
 
 ## How to resume
