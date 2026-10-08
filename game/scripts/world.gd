@@ -72,7 +72,7 @@ func _ready() -> void:
 
 func _cp_pos(cp: String) -> Array:
 	match cp:
-		"escape": return [Vector3(8, -6, -60.5), PI]
+		"escape": return [Vector3(8, -6, -60.5), 0.0]
 		"escape2": return [Vector3(-11, 0, -46.5), PI]
 		"sp0", "sp1", "sp2": return [mpos(CPS[cp][0]) + Vector3(0, 0.3, 0), PI * 0.5]
 	return [mpos(CPS[cp][0]) + Vector3(0, 0.1, 0), myaw(CPS[cp][0])]
@@ -927,7 +927,7 @@ func start_escape(from_cp: bool) -> void:
 	Audio.music("escape"); music_zone = "escape"
 	# the castle panics: remaining guards flee, two knights still want a fight
 	for e in get_tree().get_nodes_in_group("enemies"):
-		if not e.defeated and e.kind in ["guard", "peasant", "cook", "archer"] and e.global_position.y > -3: e.go("flee"); e.defeated_soft()
+		if not e.defeated and e.kind in ["guard", "peasant", "cook", "archer", "jailer"]: e.go("flee"); e.defeated_soft()
 	if not from_cp or true:
 		for pos in [Vector3(-6, 0, -30), Vector3(6, 0, -22)]:
 			var k := Enemy.new(); k.setup("knight", "escape", pos, PI); add_child(k)
