@@ -288,7 +288,7 @@ func _ensure_nav(lv, stage: int) -> void:
 	nav_key = key
 	var t0 := Time.get_ticks_msec()
 	var nm := NavigationMesh.new()
-	nm.agent_radius = 0.4; nm.agent_height = 1.75; nm.agent_max_climb = 0.45; nm.agent_max_slope = 50
+	nm.agent_radius = 0.5; nm.agent_height = 1.8; nm.agent_max_climb = 0.4; nm.agent_max_slope = 50   # multiples of cell size/height (no precision warnings)
 	nm.cell_size = 0.25; nm.cell_height = 0.1
 	nm.geometry_parsed_geometry_type = NavigationMesh.PARSED_GEOMETRY_STATIC_COLLIDERS
 	var src := NavigationMeshSourceGeometryData3D.new()
