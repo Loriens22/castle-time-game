@@ -71,5 +71,22 @@ Live: https://loriens22.github.io/castle-time-game/ (gh-pages branch, deployed b
   - taps + SKIP.
 - Deployed 18:11 Sofia (gh-pages f5bd880).
 
+- Fix found by the web audit: dying in the courtyard before reaching the yard trigger respawned the player on the moat side with "Fight through the castle guard" and no waypoint. A waypoint now points into the yard. Deployed 19:16 Sofia (gh-pages 53808c6); the live .pck matches the local build.
+- Web audit, done in stage segments. Setup for every segment:
+  - headless Chrome, Android 14 Pixel UA, touch;
+  - audio needs a real tap, and the AudioContext stays "running" with signal at the output throughout;
+  - the in-game bot plays with enemies active;
+  - dialogue is advanced only by real Playwright taps;
+  - pause is tapped in every cutscene, with forced deaths in every cutscene and once per stage.
+- Segments, all with 0 script errors and 0 watchdog fires:
+  - title → lab → arrival → farm → town
+  - town → green ("Tuesdays") → moat → chains → yard
+  - yard → grate → spire
+  - sp1 → boss → zip → keep door → hall
+  - hall → dungeon → cell → trebuchet → escape
+  - escape2 → portcullis → finale → lab ending → credits → post-credits → title
+- Live URL: the Tuesdays repro (`--level=world --cp=town --do=dbg_repro_tuesdays@70`) with real taps passes. The cutscene ends after a14, then input and camera come back. Run with `python3 test/webplay.py URL --nobot --gargs="..."`.
+
 ### Left
-- Full web playthrough in headless Chrome (Android UA, touch, audio): `python3 test/webplay.py URL --minutes 70`.
+- Clock hand (sp0 → sp1) is not covered in the web run. Under swiftshader (5–10 fps) the bot keeps missing the jump onto the minute hand, and it does the same natively at `--fixed-fps 8`. It passes at 60 fps. Player physics run at a fixed 60 Hz, so this is most likely the bot's steering, but on very slow phones it's worth a real-device check. The hand's resting top sits about 1.4 m above segment 37; max jump is about 1.8 m.
+- Not a hang, but notable: wall archers on the yard front wall can make "Fight through the castle guard" slow. The 50 s Maestro-call timer moves the story on regardless.
