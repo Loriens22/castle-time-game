@@ -75,6 +75,14 @@ func _physics_process(dt: float) -> void:
 		if lv.in_cs: _cutscene(lv, p)
 		return
 	cs_last = ""
+	# --bot-die: also die once per story stage at a random moment (checkpoint respawn mid-sequence)
+	if opt.has("bot-die") and not p.dead:
+		var sk := "st_%s_%s" % [_lvname(lv), str(lv.get("stage"))]
+		if not died_in.has(sk) and randf() < 0.0015:
+			died_in[sk] = true
+			_log("forcing a death during gameplay (%s, obj '%s')" % [sk, G.ui.obj_lbl.text])
+			p.invuln = 0.0; p.hp = 1; p.damage(999)
+			if not p.dead: p.die()
 	_play(lv, p, dt)
 
 func _release() -> void:
@@ -105,8 +113,9 @@ func _cutscene(lv, p: Player) -> void:
 	var vs := get_viewport().get_visible_rect().size
 	if opt.has("bot-die") and not died_in.has("cs_" + nm) and randf() < 0.002:
 		died_in["cs_" + nm] = true
-		_log("forcing a death inside cutscene '%s' (should be ignored while locked)" % nm)
-		p.invuln = 0.0; p.damage(999)
+		_log("forcing a death inside cutscene '%s' (fall / collapse while locked)" % nm)
+		p.invuln = 0.0; p.damage(999)   # normal damage is ignored while locked...
+		if not p.dead: p.die()           # ...but a kill zone / the collapse timer can still kill
 	if opt.has("bot-pause") and not cs_pause_done.has(nm) and t > cs_tap_t and G.ui.touch.visible:
 		cs_pause_done[nm] = true
 		_log("tap PAUSE inside cutscene '%s'" % nm)

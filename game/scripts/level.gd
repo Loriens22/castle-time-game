@@ -305,7 +305,7 @@ func respawn() -> void:
 func respawn_now() -> void:
 	player.revive()
 	player.teleport(cp_pos, cp_yaw)
-	player.cam.current = true
+	if not in_cs: player.cam.current = true   # mid-cutscene the cutscene camera stays; cs_end() restores the player's
 
 func on_fall() -> void:
 	player.input_locked = true
