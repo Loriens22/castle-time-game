@@ -491,7 +491,7 @@ func show_pause() -> void:
 	var pc := pause_box.get_child(1)
 	pc.position = root.size / 2 - pc.size / 2
 	var v := pc.get_child(0)
-	v.get_node("Stats").text = "Discoveries: %d    Anachronisms: %d / %d    Knock-outs: %d" % [G.save["secrets"].size(), G.save["collect"].size(), G.COLLECT_IDS.size(), G.save["kos"]]
+	v.get_node("Stats").text = "Discoveries: %d / %d    Anachronisms: %d / %d    Knock-outs: %d" % [G.save["secrets"].size(), G.secret_total, G.save["collect"].size(), G.COLLECT_IDS.size(), G.save["kos"]]
 	v.get_node("Help").text = "Touch: left = move, right = look, FIRE / JUMP / ROLL / PULSE / USE buttons" if G.is_touch else "WASD move | Mouse aim | LMB fire | RMB aim | Space jump | Shift roll | Q pulse | E use | Esc pause"
 	v.get_node("Resume").grab_focus.call_deferred()
 

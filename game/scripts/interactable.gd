@@ -19,5 +19,5 @@ func interact(_p: Node) -> void:
 	elif line != "":
 		G.level.say_line(line)
 	if secret and line != "":
-		if G.add_secret(line): G.ui.toast("Discovery found  %d" % G.save["secrets"].size(), Color(0.6, 1.0, 0.9))
+		if G.add_secret(line): G.ui.toast("Discovery %d / %d" % [G.save["secrets"].size(), G.secret_total], Color(0.6, 1.0, 0.9))
 	if once: enabled = false

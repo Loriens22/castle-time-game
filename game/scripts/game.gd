@@ -21,7 +21,7 @@ var paused := false
 var big_head := false
 var bench := false           # automated test mode (no saving, extra logging)
 
-const SECRET_TOTAL := 45
+var secret_total := 45   # recomputed from the dialogue table at startup
 const COLLECT_IDS := ["cmos", "earbud", "sunglasses", "tamagotchi", "vr", "phonecase", "gameboy", "fidget"]
 
 func _ready() -> void:
@@ -32,6 +32,9 @@ func _ready() -> void:
 	if f:
 		var d = JSON.parse_string(f.get_as_text())
 		dialogue = d["lines"]; names = d["names"]; colors = d["colors"]
+		secret_total = COLLECT_IDS.size() + 2   # + big-head code + archery
+		for k in dialogue:
+			if String(k).begins_with("i_"): secret_total += 1
 	var f2 := FileAccess.open("res://data/vo.json", FileAccess.READ)
 	if f2: vo_len = JSON.parse_string(f2.get_as_text())
 	load_all()

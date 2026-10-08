@@ -49,7 +49,7 @@ Then it's back to 2026 for a **time-loop twist**, followed by the credits and a 
 - Spire platforming with moving platforms (the clock hand and the gears), plus checkpoints, health pickups (food) and a save/continue system.
 - A timed fire escape with burning debris and collapsing beams.
 - Cinematic cutscenes with letterboxing and subtitles, and **199 voiced lines** from 13 distinct voices.
-- **45 discoveries** to find:
+- **56 discoveries** to find:
   - 8 **anachronism collectibles** (a CMOS battery, an earbud, sunglasses, a Tamagotchi, a VR headset, a phone case, a Game Boy, a fidget spinner)
   - the Maestro's **inventor sketches**
   - **cats**: one in the lab, one in town, one in the kitchen
