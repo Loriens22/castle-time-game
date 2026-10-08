@@ -221,14 +221,15 @@ func _targets() -> void:
 	# drawbridge chains
 	for i in 2:
 		var k := "M-it-chain%d" % i
-		var t := ShootTarget.make(self, mpos(k), Vector3(0.6, 3.5, 0.6), _chain_hit, "chain%d" % i)
+		# the hit box follows the whole visible chain (it used to cover only the end inside the wall, which the
+		# gatehouse hides from some angles - the right chain could look unhittable)
+		var t := ShootTarget.make(self, mpos(k) + Vector3(0, -0.2, 2.0), Vector3(0.9, 6.0, 0.9), _chain_hit, "chain%d" % i)
+		t.rotation.x = -0.6
 		t.hp = 4
 		chain_targets.append(t)
 		var cm := MeshInstance3D.new(); var cy := CylinderMesh.new(); cy.top_radius = 0.07; cy.bottom_radius = 0.07; cy.height = 6.0; cy.radial_segments = 6
 		cm.mesh = cy; var im := StandardMaterial3D.new(); im.albedo_color = Color(0.3, 0.28, 0.26); im.metallic = 0.8; im.roughness = 0.5; cm.material_override = im
 		t.add_child(cm); cm.name = "Chain"
-		cm.global_position = mpos(k) + Vector3(0, -0.2, 2.0)
-		cm.rotation.x = -0.6
 	# archery targets
 	for k in markers.keys():
 		if k.begins_with("M-tg-archery"):
@@ -316,6 +317,9 @@ func _on_ko(e: Enemy) -> void:
 	elif grp == "yard":
 		yard_progress()
 	if grp in ["farm", "green", "yard"]: refresh_objective()   # keep "(N left)" counters live
+
+func _alive(grp: String) -> Array:
+	return groups.get(grp, []).filter(func(e): return is_instance_valid(e) and not e.defeated)
 
 func group_cleared(grp: String) -> bool:
 	for e in groups.get(grp, []):
@@ -527,7 +531,7 @@ func refresh_objective() -> void:
 func arrival() -> void:
 	Audio.music("")
 	Audio.ambience("amb_country")
-	cs_begin()
+	cs_begin("arrival", func(): G.ui.fade_rect.color = Color(0, 0, 0, 0); G.checkpoint("farm", 1); refresh_objective())
 	player.actor.play("crouch")
 	G.ui.fade_rect.color = Color(1, 1, 1, 1)
 	shot(mpos("M-cam-shed1"), player.global_position + Vector3(0, 1, 0), 6.0, mpos("M-cam-shed1") + Vector3(1.0, 0.6, 1.0), player.global_position + Vector3(0, 1.2, 0), 55)
@@ -550,8 +554,8 @@ func arrival() -> void:
 	refresh_objective()
 
 func peasants_scene() -> void:
-	cs_begin()
-	var farm: Array = groups.get("farm", [])
+	cs_begin("peasants", func(): _unscript("farm"); refresh_objective())
+	var farm: Array = _alive("farm")
 	for e in farm: e.scripted = true
 	if farm.size() > 1:
 		farm[0].global_position = player.global_position + Vector3(2.0, 0, -6.0)
@@ -578,8 +582,8 @@ func peasants_scene() -> void:
 	await say("a07")
 	player.actor.play("hold")
 	await say("a08")
-	for e in farm: e.scripted = false; e.alert(false)
 	cs_end()
+	_unscript("farm")
 	refresh_objective()
 
 func farm_cleared() -> void:
@@ -595,22 +599,22 @@ func _market_lines() -> void:
 
 func green_scene() -> void:
 	set_checkpoint("green", _cp_pos("green")[0], _cp_pos("green")[1], 3); stage = 3
-	cs_begin()
-	var gs: Array = groups.get("green", [])
+	cs_begin("green", func(): _unscript("green"); refresh_objective())
+	var gs: Array = _alive("green")
 	for e in gs: e.scripted = true
-	if gs.size() > 4: talkers["guard"] = gs[4].actor; talkers["guard2"] = gs[0].actor
+	if gs.size() > 1: talkers["guard"] = gs[gs.size() - 1].actor; talkers["guard2"] = gs[0].actor
 	shot(mpos("M-cam-green1"), Vector3(0, 1.5, 6), 6.0, mpos("M-cam-green1") + Vector3(0, -1.0, -3.0), Vector3(0, 1.5, 6), 50)
-	if gs.size() > 4: gs[4].actor.play("point")
+	if gs.size() > 1: gs[gs.size() - 1].actor.play("point")
 	await say("a12")
 	shot(player.global_position + Vector3(-1.2, 1.6, 2.0), player.global_position + Vector3(0, 1.4, 0), 0.0, null, null, 45)
 	player.actor.play("shrug")
 	await say("a13")
-	if gs.size() > 0:
+	if gs.size() > 0 and is_instance_valid(gs[0]):
 		shot(gs[0].global_position + Vector3(1.5, 1.7, -2.5), gs[0].global_position + Vector3(0, 1.5, 0), 0.0, null, null, 40)
 		gs[0].actor.play("nod")
 	await say("a14")
-	for e in gs: e.scripted = false; e.alert(false)
 	cs_end()
+	_unscript("green")
 	refresh_objective()
 
 func green_cleared() -> void:
@@ -624,7 +628,7 @@ func shot_hint_chains() -> void:
 	refresh_objective()
 
 func drawbridge_scene() -> void:
-	cs_begin()
+	cs_begin("drawbridge", _drawbridge_done)
 	stage = max(stage, 3)
 	shot(mpos("M-cam-bridge"), Vector3(0, 2.0, 0), 4.0, mpos("M-cam-bridge") + Vector3(-3, -2, -2), Vector3(0, 1.0, 1), 50)
 	Audio.sfx("creak"); Audio.sfx("chain_snap", -2)
@@ -633,15 +637,26 @@ func drawbridge_scene() -> void:
 	shot(mpos("M-cam-gate2"), Vector3(0, 1.6, -6), 0.0, null, null, 55)
 	await cs_wait(0.4)
 	await say("a16")
-	for e in groups.get("green", []):
-		if is_instance_valid(e) and not e.defeated: e.alert(false)
 	cs_end()
+	_drawbridge_done()
+
+func _drawbridge_done() -> void:
+	_bridge_down(true)
+	for e in groups.get("green", []):
+		if is_instance_valid(e) and not e.defeated: e.scripted = false; e.alert(false)
 	stage = 4 if stage < 4 else stage
 	G.checkpoint("yard", 4)
 	fired.erase("yard")
 	refresh_objective()
 	G.ui.objective("Storm the castle!", "CASTLE COURTYARD")
 	G.ui.set_waypoint(mpos("M-tr-yard"))
+
+## story enemies frozen for a cutscene go back to normal (safe with freed / knocked-out enemies)
+func _unscript(grp: String) -> void:
+	for e in groups.get(grp, []):
+		if is_instance_valid(e):
+			e.scripted = false
+			if not e.defeated: e.alert(false)
 
 func _bridge_down(instant: bool) -> void:
 	var b: Node3D = movers["X-drawbridge"]
@@ -664,7 +679,7 @@ func maestro_call() -> void:
 func grate_talk() -> void:
 	if G.flag("grate_done") or in_cs: return
 	G.set_flag("grate_call")
-	cs_begin()
+	cs_begin("grate", func(): G.set_flag("grate_done"); G.save_all(); refresh_objective())
 	get_node("IT_grate").enabled = false
 	player.teleport(mpos("M-it-grate") + Vector3(0, -0.3, 2.2), 0.0)
 	player.actor.play("crouch")
@@ -700,7 +715,7 @@ func boss_intro() -> void:
 	stage = 7
 	set_checkpoint("spiretop", _cp_pos("spiretop")[0], _cp_pos("spiretop")[1], 7)
 	if boss == null: _spawn_boss()
-	cs_begin()
+	cs_begin("boss_intro", func(): boss.active = true; G.ui.boss(true, boss.hp / boss.max_hp); refresh_objective())
 	Audio.music("boss")
 	var bp := boss.global_position
 	boss.face = atan2(-(player.global_position - bp).x, -(player.global_position - bp).z); boss.actor.rotation.y = boss.face
@@ -726,7 +741,7 @@ func boss_intro() -> void:
 func boss_defeated() -> void:
 	G.ui.boss(false)
 	await wait_real(0.8)
-	cs_begin()
+	cs_begin("boss_defeated", _boss_defeated_done)
 	shot(boss.global_position + Vector3(2.5, 1.5, 2.5), boss.global_position + Vector3(0, 0.6, 0), 4.0, boss.global_position + Vector3(1.8, 1.0, 1.8), boss.global_position + Vector3(0, 0.6, 0), 45)
 	FX.stars(boss, 0.9)
 	await say("c09")
@@ -738,7 +753,7 @@ func boss_defeated() -> void:
 	player.actor.play("pickup")
 	shot(player.global_position + Vector3(1.6, 1.4, 1.5), player.global_position + Vector3(0, 0.8, -0.6), 0.0, null, null, 45)
 	await cs_wait(0.9)
-	key.queue_free()
+	if is_instance_valid(key): key.queue_free()
 	G.set_flag("key")
 	G.ui.toast("CLOCK KEY acquired", Color(1, 0.85, 0.4))
 	player.actor.play("cheer")
@@ -746,6 +761,10 @@ func boss_defeated() -> void:
 	shot(mpos("M-zip-top") + Vector3(3, 1, 3), mpos("M-zip-bottom"), 3.0, mpos("M-zip-top") + Vector3(2, 0.5, 2), mpos("M-zip-bottom"), 50)
 	await say("c11")
 	cs_end()
+	_boss_defeated_done()
+
+func _boss_defeated_done() -> void:
+	G.set_flag("key")
 	get_node("IT_zip").enabled = true
 	G.checkpoint("spiretop", 7)
 	refresh_objective()
@@ -762,7 +781,7 @@ func ride_zip() -> void:
 	_keepdoor_scene()
 
 func _keepdoor_scene() -> void:
-	cs_begin()
+	cs_begin("keepdoor", func(): _open_keepdoor(true); refresh_objective())
 	shot(mpos("M-cam-keepdoor"), mpos("M-keepdoor") + Vector3(0, 2, 0), 3.0, mpos("M-cam-keepdoor") + Vector3(-1, -0.5, -1), mpos("M-keepdoor") + Vector3(0, 2, 0), 50)
 	_open_keepdoor(false)
 	var ks := groups.get("hall", [])
@@ -815,7 +834,7 @@ func cell_scene() -> void:
 	get_node("IT_cellgate").enabled = false
 	_open_gate("X-cellgate", false)
 	await wait_real(1.2)
-	cs_begin()
+	cs_begin("cell", _cell_recover)
 	player.teleport(Vector3(8, -6, -59.5), PI * 0.9)
 	maestro.global_position = mpos("M-npc-maestro")
 	maestro.look_at(player.global_position * Vector3(1, 0, 1) + Vector3(0, maestro.global_position.y, 0), Vector3.UP); maestro.rotation.y += PI
@@ -896,7 +915,17 @@ func trebuchet_scene() -> void:
 	tw.kill()
 	arm.rotation.x = deg_to_rad(120)
 	cs_end()
-	start_escape(false)
+	if stage < 10: start_escape(false)
+
+func _cell_recover() -> void:
+	for k in ["count", "engineer"]:
+		if talkers.has(k) and is_instance_valid(talkers[k]): talkers[k].queue_free()
+	if movers.has("X-trebuchet_arm"): movers["X-trebuchet_arm"].rotation.x = deg_to_rad(120)
+	scroll_prop.visible = false
+	G.ui.fade_rect.color.a = 0.0
+	if stage < 10:
+		player.teleport(Vector3(8, -6, -59.5), PI * 0.9)
+		start_escape(false)
 
 func ignite() -> void:
 	if not get_tree().get_nodes_in_group("escape_fire").is_empty(): return
@@ -995,7 +1024,7 @@ func finale() -> void:
 	escape_t = -1.0
 	G.ui.show_timer(-1)
 	G.checkpoint("finale", 11)
-	cs_begin()
+	cs_begin("finale", _finale_done)
 	await cs_wait(0.2)
 	player.teleport(Vector3(0, 0.1, 14), PI)
 	player.actor.play("idle")
@@ -1031,6 +1060,12 @@ func finale() -> void:
 	FX.particles(player.global_position + Vector3(0, 1, 0), 40, Color(0.4, 1.0, 0.9), 0.8, 5.0, 0.15, 0.0)
 	G.ui.fade_rect.color = Color(1, 1, 1, 0)
 	await G.ui.fade(1.0, 0.4)
+	_finale_done()
+
+var _finale_gone := false
+func _finale_done() -> void:
+	if _finale_gone: return
+	_finale_gone = true
 	in_cs = false
 	G.goto("lab", {"ending": true})
 
@@ -1108,3 +1143,18 @@ func dbg_ride() -> void:
 	for k in 10:
 		await get_tree().create_timer(1.0).timeout
 		print("RIDE t=%.1f pos=%s floor=%s" % [fmod(clock_t, 19.0), str(player.global_position.snapped(Vector3.ONE * 0.1)), player.is_on_floor()])
+
+## regression test for the "Mostly on Tuesdays" freeze (run with --level=world --cp=town --do=dbg_repro_tuesdays@70):
+## a moat guard knocked out far away in town is deleted 30 s later, in the middle of the moat cutscene.
+func dbg_repro_tuesdays() -> void:
+	var g = groups.get("green", [])[2]
+	g.global_position = Vector3(0, 0.2, 48); g.home = g.global_position
+	player.teleport(Vector3(0, 0.2, 52), 0.0)
+	g.ko()
+	print("REPRO knocked out a moat guard in town (z=48)")
+	await get_tree().create_timer(21.0).timeout
+	player.teleport(Vector3(0, 0.2, 16.0), PI)
+	print("REPRO player walks into the moat trigger")
+	for i in 16:
+		await get_tree().create_timer(1.0).timeout
+		print("REPRO t+%d in_cs=%s locked=%s letterbox=%s guard_valid=%s" % [i, in_cs, player.input_locked, G.ui.cutscene_on, is_instance_valid(g)])

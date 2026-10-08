@@ -422,6 +422,7 @@ func try_pulse() -> void:
 # ------------------------------------------------------------------ health
 func damage(amount: float, from := Vector3.ZERO) -> void:
 	if dead or invuln > 0.0 or input_locked: return
+	if G.trace: G.tlog("hurt %d hp=%d from %s at %s" % [amount, hp, str(from.snapped(Vector3.ONE * 0.1)), str(global_position.snapped(Vector3.ONE * 0.1))])
 	hp -= amount
 	since_hurt = 0.0
 	invuln = 0.25

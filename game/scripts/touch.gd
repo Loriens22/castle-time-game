@@ -40,13 +40,15 @@ func _layout() -> void:
 		"pulse": {"pos": br + Vector2(-190, -100) * scale_f, "r": r * 0.75, "label": "PULSE"},
 		"use": {"pos": br + Vector2(-110, -260) * scale_f, "r": r * 0.8, "label": "USE"},
 		"pause": {"pos": Vector2(s.x - 54 * scale_f, 50 * scale_f), "r": 34 * scale_f, "label": "II"},
+		"skip": {"pos": Vector2(s.x - 74 * scale_f, s.y - 64 * scale_f), "r": 46 * scale_f, "label": "SKIP"},
 	}
 	queue_redraw()
 
 func _hit_button(p: Vector2) -> String:
 	for k in buttons:
 		if k == "use" and not use_visible: continue
-		if cutscene and k != "pause": continue
+		if cutscene and not k in ["pause", "skip"]: continue
+		if k == "skip" and not cutscene: continue
 		if p.distance_to(buttons[k]["pos"]) < buttons[k]["r"] * 1.15: return k
 	return ""
 
@@ -56,8 +58,12 @@ func _input(e: InputEvent) -> void:
 		G.is_touch = true
 		if e.pressed:
 			if cutscene:
-				if _hit_button(e.position) == "pause": G.main.toggle_pause()
-				else: G.ui.request_skip()
+				if G.paused: return
+				var hb := _hit_button(e.position)
+				if hb == "pause": G.main.toggle_pause()
+				elif hb == "skip": G.ui.request_skip()
+				else: G.ui.request_advance()
+				get_viewport().set_input_as_handled()
 				return
 			if G.paused: return
 			var b := _hit_button(e.position)
@@ -129,7 +135,8 @@ func _draw() -> void:
 	var cyan := Color(0.35, 1.0, 0.85)
 	for k in buttons:
 		if k == "use" and not use_visible: continue
-		if cutscene and k != "pause": continue
+		if cutscene and not k in ["pause", "skip"]: continue
+		if k == "skip" and not cutscene: continue
 		var b: Dictionary = buttons[k]
 		var pressed: bool = k in btn_ids.values()
 		draw_circle(b["pos"], b["r"], Color(0.05, 0.08, 0.1, 0.45 if not pressed else 0.7))

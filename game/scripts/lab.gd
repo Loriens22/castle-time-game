@@ -124,7 +124,7 @@ func intro() -> void:
 	player.global_position = Vector3(0.0, 0.0, -2.0)
 	player.set_view(0.0)
 	player.actor.play("type")
-	cs_begin()
+	cs_begin("intro", _intro_done)
 	G.ui.fade_rect.color.a = 1.0
 	shot(mpos("M-cam-wide"), Vector3(0, 1.0, -1.5), 14.0, mpos("M-cam-wide") + Vector3(1.6, -0.6, -0.8), Vector3(0, 1.2, -2.5), 55)
 	G.ui.fade(0.0, 1.5)
@@ -148,19 +148,33 @@ func intro() -> void:
 	await say("p08")
 	player.actor.play("shrug")
 	await say("p09")
-	player.teleport(mpos("M-start") + Vector3(0, 0, -1.6), PI * 0.05)
 	cs_end()
+	_intro_done()
+	await wait_real(4.0)
+	if not in_cs: G.ui.toast("Tip: examine things in the lab with " + ("USE" if G.is_touch else "[E]"), Color(1, 1, 1))
+
+func _intro_done() -> void:
+	player.teleport(mpos("M-start") + Vector3(0, 0, -1.6), PI * 0.05)
+	player.actor.play("idle")
+	G.ui.fade_rect.color.a = 0.0
 	G.ui.objective("Grab your T-PORT phone from the desk", "THE LAB  -  2026")
 	G.ui.set_waypoint(mpos("M-phone") + Vector3(0, 0.3, 0))
 	G.checkpoint("lab", 0)
-	await wait_real(4.0)
-	if not in_cs: G.ui.toast("Tip: examine things in the lab with " + ("USE" if G.is_touch else "[E]"), Color(1, 1, 1))
+
+var _teleported := false
+func _teleport_now() -> void:
+	if _teleported: return
+	_teleported = true
+	if is_instance_valid(screen_ui): screen_ui.queue_free()
+	in_cs = false
+	G.checkpoint("farm", 1)
+	G.goto("world", {"arrive": true})
 
 func phone_cutscene() -> void:
 	if in_cs: return
 	var it := get_node_or_null("PhoneInteract")
 	if it: it.enabled = false
-	cs_begin()
+	cs_begin("phone", _teleport_now)
 	G.ui.set_waypoint(null)
 	player.teleport(mpos("M-phone") + Vector3(-0.6, -0.85, 0.8), 0.6)
 	player.global_position.y = 0.0
@@ -198,9 +212,7 @@ func phone_cutscene() -> void:
 	G.ui.fade_rect.color = Color(1, 1, 1, 0)
 	await G.ui.fade(1.0, 0.25)
 	G.ui.fade_rect.color = Color(1, 1, 1, 1)
-	in_cs = false
-	G.checkpoint("farm", 1)
-	G.goto("world", {"arrive": true})
+	_teleport_now()
 
 func _phone_screen() -> void:
 	screen_ui = PanelContainer.new()
@@ -235,7 +247,7 @@ func ending() -> void:
 	Audio.music("")
 	Audio.ambience("amb_lab")
 	player.equip(true)
-	cs_begin()
+	cs_begin("ending", _ending_done)
 	G.ui.fade_rect.color = Color(1, 1, 1, 1)
 	player.teleport(Vector3(-0.6, 0, 0.6), PI * 0.8)
 	player.actor.play("kneel")
@@ -271,6 +283,15 @@ func ending() -> void:
 	await say("f09")
 	await cs_wait(1.0)
 	await G.ui.fade(1.0, 1.5)
+	cs_name = ""; cs_recover = Callable()
+	_ending_done()
+
+var _credits_shown := false
+func _ending_done() -> void:
+	if _credits_shown: return
+	_credits_shown = true
+	cs_name = ""; cs_recover = Callable()
+	wd_off = true   # credits roll: the cutscene state stays on (player locked, no pause) and the watchdog sleeps
 	G.ui.show_hud(false)
 	G.ui.clear_sub()
 	G.save["flags"]["finished"] = true
@@ -284,7 +305,8 @@ func ending() -> void:
 func post_credits() -> void:
 	G.ui.show_hud(true)
 	G.ui.fade_rect.color.a = 1.0
-	cs_begin()
+	wd_off = false
+	cs_begin("post_credits", func(): G.main.to_title())
 	chicken = Animal.new(); chicken.setup("chicken", Vector3(0.5, 0.75, -2.6), 0.0); add_child(chicken)
 	chicken.set_physics_process(false)
 	chicken.global_position = Vector3(0.6, 0.78, -2.75)

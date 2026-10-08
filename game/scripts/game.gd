@@ -20,6 +20,7 @@ var player: Player = null
 var paused := false
 var big_head := false
 var bench := false           # automated test mode (no saving, extra logging)
+var trace := false           # --trace: print story/cutscene events (used by the automated playthrough)
 
 var secret_total := 45   # recomputed from the dialogue table at startup
 const COLLECT_IDS := ["cmos", "earbud", "sunglasses", "tamagotchi", "vr", "phonecase", "gameboy", "fidget"]
@@ -41,6 +42,10 @@ func _ready() -> void:
 	if is_touch and settings["quality"] == 1 and not save["flags"].has("q_set"): settings["quality"] = 0
 	for a in OS.get_cmdline_user_args():
 		if a == "--bench": bench = true
+		if a == "--trace": trace = true
+
+func tlog(s: String) -> void:
+	if trace: print("TRACE %7.1f %s" % [Time.get_ticks_msec() / 1000.0, s])
 
 func line_dur(id: String) -> float:
 	return float(vo_len.get(id, 2.5))

@@ -21,6 +21,8 @@ func _ready() -> void:
 		if arg.begins_with("--level="): a["level"] = arg.substr(8)
 		elif arg.begins_with("--cp="): a["cp"] = arg.substr(5)
 	_debug_args()
+	if "--bot" in OS.get_cmdline_user_args():
+		var b: Node = load("res://scripts/test/bot.gd").new(); b.name = "Bot"; add_child(b)
 	if a.has("level"):
 		var args := {}
 		if a.has("cp"): args["cp"] = a["cp"]; G.save["stage"] = 1
@@ -124,7 +126,7 @@ func _setup_input() -> void:
 	var map := {
 		"move_fwd": [KEY_W, KEY_UP], "move_back": [KEY_S, KEY_DOWN], "move_left": [KEY_A, KEY_LEFT], "move_right": [KEY_D, KEY_RIGHT],
 		"jump": [KEY_SPACE], "roll": [KEY_SHIFT, KEY_C, KEY_CTRL], "pulse": [KEY_Q], "interact": [KEY_E, KEY_F], "walk": [KEY_ALT],
-		"pause": [KEY_ESCAPE, KEY_P], "skip": [KEY_ENTER, KEY_KP_ENTER],
+		"pause": [KEY_ESCAPE, KEY_P], "skip": [KEY_TAB, KEY_BACKSPACE], "advance": [KEY_SPACE, KEY_ENTER, KEY_KP_ENTER],
 	}
 	for a in map:
 		if not InputMap.has_action(a): InputMap.add_action(a, 0.25)
@@ -135,7 +137,7 @@ func _setup_input() -> void:
 	var mb := InputEventMouseButton.new(); mb.button_index = MOUSE_BUTTON_LEFT; InputMap.action_add_event("fire", mb)
 	var mb2 := InputEventMouseButton.new(); mb2.button_index = MOUSE_BUTTON_RIGHT; InputMap.action_add_event("aim", mb2)
 	# gamepad
-	var pads := {"jump": JOY_BUTTON_A, "roll": JOY_BUTTON_B, "interact": JOY_BUTTON_X, "pulse": JOY_BUTTON_Y, "pause": JOY_BUTTON_START, "skip": JOY_BUTTON_A}
+	var pads := {"jump": JOY_BUTTON_A, "roll": JOY_BUTTON_B, "interact": JOY_BUTTON_X, "pulse": JOY_BUTTON_Y, "pause": JOY_BUTTON_START, "skip": JOY_BUTTON_BACK, "advance": JOY_BUTTON_A}
 	for a in pads:
 		var j := InputEventJoypadButton.new(); j.button_index = pads[a]; InputMap.action_add_event(a, j)
 	var lb := InputEventJoypadButton.new(); lb.button_index = JOY_BUTTON_LEFT_SHOULDER; InputMap.action_add_event("pulse", lb)

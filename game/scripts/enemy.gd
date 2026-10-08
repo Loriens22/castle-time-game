@@ -10,7 +10,7 @@ const STATS := {
 	"torch": {"model": "peasant", "hp": 30, "speed": 4.0, "dmg": 12, "range": 1.9, "atk": "swing", "tele": 0.5, "cd": 1.4, "weapon": "P-torch", "aggro": 16, "bark": "peas"},
 	"cabbage": {"model": "peasant_f", "hp": 25, "speed": 3.6, "dmg": 8, "range": 17.0, "atk": "throw", "tele": 0.55, "cd": 2.0, "weapon": "P-cabbage", "aggro": 20, "ranged": "cabbage", "keep": 8.0, "bark": "peas"},
 	"guard": {"model": "guard", "hp": 60, "speed": 3.8, "dmg": 10, "range": 2.5, "atk": "thrust", "tele": 0.5, "cd": 1.5, "weapon": "P-spear", "shield": true, "aggro": 22, "bark": "guard"},
-	"archer": {"model": "archer", "hp": 35, "speed": 0.0, "dmg": 10, "range": 42.0, "atk": "bow", "tele": 0.9, "cd": 2.6, "weapon": "P-bow", "aggro": 38, "ranged": "arrow", "bark": "arch", "static": true},
+	"archer": {"model": "archer", "hp": 35, "speed": 0.0, "dmg": 7, "range": 42.0, "atk": "bow", "tele": 0.9, "cd": 3.2, "weapon": "P-bow", "aggro": 38, "ranged": "arrow", "bark": "arch", "static": true},
 	"knight": {"model": "knight", "hp": 140, "speed": 3.4, "dmg": 18, "range": 2.4, "atk": "swing", "tele": 0.55, "cd": 1.6, "weapon": "P-sword", "armor": 0.4, "aggro": 24, "charge": true, "bark": "knight"},
 	"cook": {"model": "peasant", "hp": 40, "speed": 4.0, "dmg": 10, "range": 1.9, "atk": "swing", "tele": 0.4, "cd": 1.2, "weapon": "P-cleaver", "aggro": 12, "bark": "peas"},
 	"jailer": {"model": "jailer", "hp": 120, "speed": 3.2, "dmg": 20, "range": 2.8, "atk": "slam", "tele": 0.7, "cd": 2.0, "weapon": "P-hammer", "aggro": 14, "slam": true, "bark": "guard"},
@@ -185,7 +185,7 @@ func _physics_process(dt: float) -> void:
 		"stunned":
 			actor.play("dizzy" if actor.ap.has_animation("dizzy") else "stunned", 0.1)
 			if st_t > 3.0:
-				if stars: stars.queue_free(); stars = null
+				if is_instance_valid(stars): stars.queue_free(); stars = null
 				go("chase")
 		"flee":
 			if player:
@@ -324,7 +324,7 @@ func pulse_hit(from: Vector3) -> void:
 	else: hp -= 8
 	if hp <= 0: ko(); return
 	go("stunned")
-	if stars == null: stars = FX.stars(self, 2.2)
+	if not is_instance_valid(stars): stars = FX.stars(self, 2.2)
 
 func ko() -> void:
 	if state == "down": return
@@ -332,7 +332,7 @@ func ko() -> void:
 	collision_layer = 0
 	collision_mask = 1
 	actor.play("down", 0.1)
-	if stars: stars.queue_free()
+	if is_instance_valid(stars): stars.queue_free()
 	stars = FX.stars(self, 0.6)
 	Audio.sfx3("ko", global_position, -2)
 	G.save["kos"] += 1
@@ -346,10 +346,13 @@ func ko() -> void:
 	var was := defeated
 	defeated = true
 	if not was: knocked_out.emit(self)
-	# no body blocking: collision off, stay on the ground as scenery
+	# no body blocking: collision off, stay on the ground as scenery. Later, out of sight, it is hidden and put to
+	# sleep - never freed, because story scripts keep references to their enemies (freeing them broke cutscenes).
 	await get_tree().create_timer(30.0).timeout
-	if is_instance_valid(self) and G.player and G.player.global_position.distance_to(global_position) > 25.0:
-		queue_free()
+	if is_instance_valid(self) and state == "down" and G.player and G.player.global_position.distance_to(global_position) > 25.0:
+		visible = false
+		set_physics_process(false); set_process(false)
+		if is_instance_valid(stars): stars.queue_free(); stars = null
 
 static func _melee_busy() -> int:
 	var n := 0

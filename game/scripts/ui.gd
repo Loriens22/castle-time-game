@@ -52,6 +52,7 @@ var touch_jump_held := false
 var font_bold: FontVariation
 var cutscene_on := false
 var skip_req := false
+var advance_req := false   # next dialogue line (tap / click / Space / Enter / pad A)
 var konami := []
 
 func _ready() -> void:
@@ -231,6 +232,8 @@ func _process(dt: float) -> void:
 		if sub_t <= 0.0: sub_panel.visible = false
 	touch.visible = _touch_enabled() and hud.visible and not G.paused
 	touch.cutscene = cutscene_on
+	if skip_lbl.visible:
+		skip_lbl.global_position = root.global_position + Vector2(root.size.x - skip_lbl.size.x - (150.0 if touch.visible else 24.0), root.size.y - 34.0)
 	# subtitle size follows the screen
 	var vs := root.size
 	sub_panel.custom_minimum_size.x = min(vs.x - 40, 980)
@@ -309,6 +312,7 @@ func objective(t: String, chapter := "") -> void:
 	if chapter != "": chapter_lbl.text = chapter
 	if t == "": obj_panel.visible = false; return
 	if obj_lbl.text != t:
+		G.tlog("objective [%s] %s" % [chapter, t])
 		obj_lbl.text = t
 		obj_panel.visible = true
 		obj_panel.modulate = Color(1, 1, 1, 0)
@@ -346,7 +350,7 @@ func clear_sub() -> void:
 func letterbox(on: bool, t := 0.6) -> void:
 	cutscene_on = on
 	skip_lbl.visible = on
-	skip_lbl.text = "Tap to skip" if G.is_touch else "[Enter] Skip"
+	skip_lbl.text = "Tap: next line" if G.is_touch else "[Space] Next line    [Esc] Skip"
 	var h := root.size.y * 0.11 if on else 0.0
 	var tw := create_tween().set_parallel(true)
 	tw.tween_property(lb_top, "size:y", h, t)
@@ -386,13 +390,20 @@ func show_timer(sec: float) -> void:
 
 func request_skip() -> void:
 	skip_req = true
+	G.tlog("skip requested")
+
+func request_advance() -> void:
+	advance_req = true
 
 func show_hud(on: bool) -> void:
 	hud.visible = on
 
 func _unhandled_input(e: InputEvent) -> void:
-	if cutscene_on and (e.is_action_pressed("skip") or (e is InputEventMouseButton and e.pressed and e.device != -1 and not G.is_touch)):
-		skip_req = true
+	if cutscene_on and not G.paused:
+		if e.is_action_pressed("skip"): request_skip()
+		elif e.is_action_pressed("advance") or (e is InputEventMouseButton and e.pressed and e.device != -1 and not G.is_touch) \
+				or (e is InputEventScreenTouch and e.pressed and not touch.visible):
+			request_advance()
 	if e is InputEventKey and e.pressed and not e.echo:
 		konami.append(e.keycode)
 		if konami.size() > 10: konami.pop_front()
