@@ -153,7 +153,7 @@ func _process(dt: float) -> void:
 	cam_root.global_position = cp
 	cam_root.rotation.y = yaw
 	cam_pitch.rotation.x = pitch
-	var want_dist := 2.1 if aiming else 3.1
+	var want_dist := 2.5 if aiming else 3.2
 	cam_dist = G.damp(cam_dist, want_dist, 10.0, dt)
 	spring.spring_length = cam_dist
 	spring.position = Vector3(0.62 if weapon else 0.35, 0.0, 0.0)
@@ -446,7 +446,7 @@ func die() -> void:
 
 func revive() -> void:
 	dead = false; hp = max_hp; heat = 0; overheated = 0; roll_t = 0; _set_crouch(false)
-	invuln = 1.5; velocity = Vector3.ZERO
+	invuln = 2.5; velocity = Vector3.ZERO
 	actor.play("idle", 0.0)
 
 # ------------------------------------------------------------------ zipline

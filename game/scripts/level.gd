@@ -33,6 +33,7 @@ func spawn_player(pos: Vector3, yaw: float, weapon := true) -> void:
 	player.weapon = weapon
 	add_child(player)
 	player.teleport(pos, yaw)
+	player.invuln = 3.0   # grace period at checkpoints
 	player.died.connect(_on_player_died)
 	cs_cam = Camera3D.new(); cs_cam.fov = 50; cs_cam.near = 0.05; cs_cam.far = 600
 	add_child(cs_cam)
