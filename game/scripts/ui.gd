@@ -239,6 +239,15 @@ func _process(dt: float) -> void:
 	# (absolute coordinates: 'position' ignores anchors)
 	var sub_y := vs.y - sub_panel.size.y - (lb_bot.size.y * 0.55 if cutscene_on else (150.0 if touch.visible else 40.0))
 	sub_panel.position = Vector2((vs.x - sub_panel.size.x) * 0.5, sub_y)
+	# keep centred HUD pieces centred at any window size / aspect (global coords relative to root)
+	var o := root.global_position
+	obj_panel.global_position = o + Vector2((vs.x - obj_panel.size.x) * 0.5, 14)
+	var below := obj_panel.global_position.y + obj_panel.size.y
+	timer_lbl.global_position = Vector2(o.x + (vs.x - timer_lbl.size.x) * 0.5, below + 6)
+	boss_box.global_position = Vector2(o.x + (vs.x - boss_box.size.x) * 0.5, below + 10)
+	card_lbl.global_position = o + Vector2((vs.x - card_lbl.size.x) * 0.5, vs.y * 0.36 - card_lbl.size.y * 0.5)
+	prompt_lbl.global_position = o + Vector2((vs.x - prompt_lbl.size.x) * 0.5, vs.y - (250.0 if touch.visible else 200.0))
+	rotate_hint.global_position = o + Vector2((vs.x - rotate_hint.size.x) * 0.5, vs.y * 0.3)
 	rotate_hint.visible = G.is_touch and vs.y > vs.x and title_box.visible
 
 func _touch_enabled() -> bool:
