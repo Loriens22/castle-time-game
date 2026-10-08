@@ -23,7 +23,7 @@ Live: https://loriens22.github.io/castle-time-game/ (gh-pages branch, deployed b
 - Web build verified on a local server: desktop and mobile emulation (touch UI)
 
 ## Left / in progress
-- Story beat smoke test via `--do=` (boss_defeated, ride_zip, open_dungeon, cell_scene, trebuchet_scene, finale → ending)
+- DONE: story beats verified (lab→phone→teleport→arrival, peasants cutscene+combat, boss_defeated→zip, keepdoor, dungeon gate, Beppe, cell_scene→trebuchet→escape timer, escape route+roll, finale→ending→credits)
 - Redeploy the latest build, then verify the live URL on desktop and mobile; console check
 - Final screenshots in `screenshots/`
 - Polish: terrain colour/fog, more easter-egg checks
