@@ -1,0 +1,13 @@
+tools/
+venv/
+build/
+game/.godot/
+game/tools/*.tmp
+__pycache__/
+*.blend1
+screenshots/raw/
+*.blend
+*.tpz
+*.log
+/tmp/
+export_templates/

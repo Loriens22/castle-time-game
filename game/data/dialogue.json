@@ -1,0 +1,832 @@
+{
+"lines": {
+"p01": {
+"who": "sibyl",
+"text": "Juno. Wake up. Correction: you are awake. You have been awake for thirty-one hours. That is a different problem."
+},
+"p02": {
+"who": "juno",
+"text": "I'm calibrating a chrono-resonator, SIBYL. Being awake is the job."
+},
+"p03": {
+"who": "sibyl",
+"text": "I found it. The Valtorre Scroll. Lorenzo Vinciguerra's notebook. Every idea of his that history never got to read."
+},
+"p04": {
+"who": "sibyl",
+"text": "It burns tonight. Rocca di Valtorre, Tuscany. The seventeenth of October, twelve eighty-three."
+},
+"p05": {
+"who": "juno",
+"text": "Tonight tonight? As in, seven hundred and forty-three years ago tonight?"
+},
+"p06": {
+"who": "sibyl",
+"text": "The temporal window closes in nine minutes. After that the night is sealed, and the scroll is ash. Forever."
+},
+"p07": {
+"who": "juno",
+"text": "Then we go now. Where's my phone?"
+},
+"p08": {
+"who": "sibyl",
+"text": "Charging on the desk. And Juno? You might want to change out of the hoodie."
+},
+"p09": {
+"who": "juno",
+"text": "No time! It's a castle, not a dress code."
+},
+"p10": {
+"who": "juno",
+"text": "Seventeen, ten, twelve eighty-three. Forty-three point four five one two north. Eleven point oh one five seven east."
+},
+"p11": {
+"who": "sibyl",
+"text": "Coordinates locked. Arrival point: behind a livestock shed. I'm told it's very authentic."
+},
+"p12": {
+"who": "sibyl",
+"text": "Reminder: your blaster is set to stun. History gets cranky when you delete people from it."
+},
+"p13": {
+"who": "juno",
+"text": "Stun only. Got it. See you in the thirteenth century."
+},
+"a01": {
+"who": "juno",
+"text": "Okay. Smells... authentic."
+},
+"a02": {
+"who": "sibyl",
+"text": "Arrival confirmed. October seventeenth, twelve eighty-three. Local time: suppertime. The castle is north, past the village."
+},
+"a03": {
+"who": "peasant",
+"text": "Mother of saints! What is that thing?"
+},
+"a04": {
+"who": "peasantf",
+"text": "Its shoes glow! Bartolo, its shoes GLOW!"
+},
+"a05": {
+"who": "juno",
+"text": "Hi! Um. Buongiorno? I'm a pilgrim. From... Milan."
+},
+"a06": {
+"who": "peasant",
+"text": "A witch from Milan! Get the pitchforks!"
+},
+"a07": {
+"who": "juno",
+"text": "Okay. The hoodie was a mistake."
+},
+"a08": {
+"who": "sibyl",
+"text": "Noted, logged and laminated. Blaster to stun, please."
+},
+"a09": {
+"who": "sibyl",
+"text": "Farm cleared. Follow the road north. The market will be busy. Busy, and hostile."
+},
+"a10": {
+"who": "peasantf",
+"text": "Cabbages! Fresh cabbages! Perfect for throwing at witches!"
+},
+"a11": {
+"who": "juno",
+"text": "Is that a cabbage? Did she just throw a cabbage at me?"
+},
+"a12": {
+"who": "guard",
+"text": "Halt! By order of Count Ottone, no witches past the moat!"
+},
+"a13": {
+"who": "juno",
+"text": "Do you get a lot of witches?"
+},
+"a14": {
+"who": "guard2",
+"text": "Mostly on Tuesdays."
+},
+"a15": {
+"who": "sibyl",
+"text": "The drawbridge is up. Those chains look old. Old, rusty, and very shootable."
+},
+"a16": {
+"who": "juno",
+"text": "Knock knock."
+},
+"b01": {
+"who": "sibyl",
+"text": "You're inside the walls. Archers on the battlements. Keep moving and use the pulse if they swarm you."
+},
+"b02": {
+"who": "maestro",
+"text": "Psst! Psst! Signorina! Down here! The grate! Yes, you, the glowing lady!"
+},
+"b03": {
+"who": "juno",
+"text": "Hello? Are you Lorenzo Vinciguerra?"
+},
+"b04": {
+"who": "maestro",
+"text": "The one and only, unfortunately. The Count locked me down here for drawing a flying machine. He calls it witchcraft. I call it Tuesday."
+},
+"b05": {
+"who": "juno",
+"text": "I'm here for your scroll. Long story. Time travel. You'd love it."
+},
+"b06": {
+"who": "maestro",
+"text": "Time travel! I knew it! I drew your shoes last week, in a dream!"
+},
+"b07": {
+"who": "maestro",
+"text": "The scroll is with me, but my cell has the Count's clock lock. Only the clock key opens it, and the key is at the top of the spire, with Ser Bruno. He is a very large man, in a very large bell."
+},
+"b08": {
+"who": "juno",
+"text": "Top of the spire. Big man. Bell. Got it."
+},
+"b09": {
+"who": "maestro",
+"text": "Hurry! The Count is testing his trebuchet tonight, and his engineers are idiots!"
+},
+"c01": {
+"who": "sibyl",
+"text": "Fun fact: mechanical clocks are being invented right about now. You are standing on a prototype."
+},
+"c02": {
+"who": "sibyl",
+"text": "The ledge is out. Ride the minute hand. Please do not break time. Literally."
+},
+"c03": {
+"who": "juno",
+"text": "Gears. Giant spinning gears. Sure. Why not."
+},
+"c04": {
+"who": "bruno",
+"text": "WHO DARES CLIMB THE COUNT'S CLOCK?"
+},
+"c05": {
+"who": "juno",
+"text": "Hi. I'm here about a key."
+},
+"c06": {
+"who": "bruno",
+"text": "I am Ser Bruno, the Iron Bell! No blade has ever pierced my armour!"
+},
+"c07": {
+"who": "juno",
+"text": "Good thing this isn't a blade."
+},
+"c08": {
+"who": "sibyl",
+"text": "His breastplate is polished like a mirror. Shots will bounce off the front. Hit his back after he slams, or ring that bell to daze him."
+},
+"c09": {
+"who": "bruno",
+"text": "The bell... it tolls... for me..."
+},
+"c10": {
+"who": "juno",
+"text": "Clock key: acquired. Now, how do I get down?"
+},
+"c11": {
+"who": "sibyl",
+"text": "There's a rope line to the courtyard. The Count uses it to deliver fruit. Hold on tight."
+},
+"c12": {
+"who": "bruno",
+"text": "BONG! Hold still, little witch!"
+},
+"c13": {
+"who": "bruno",
+"text": "My helmet! It is ringing! Why is it ringing?"
+},
+"d01": {
+"who": "knight",
+"text": "The witch rides the fruit line! To arms!"
+},
+"d02": {
+"who": "sibyl",
+"text": "The dungeon entrance is in the great hall. North-west corner. Look for the golden lock."
+},
+"d03": {
+"who": "juno",
+"text": "The clock key fits. Tick tock."
+},
+"d04": {
+"who": "jailer",
+"text": "Nobody gets past old Grimaldo! Nobody! Except at lunch."
+},
+"d05": {
+"who": "beppe",
+"text": "Is it Thursday? They told me I'd be out by Thursday."
+},
+"d06": {
+"who": "juno",
+"text": "Which Thursday?"
+},
+"d07": {
+"who": "beppe",
+"text": "Twelve seventy-nine."
+},
+"d08": {
+"who": "maestro",
+"text": "You came! And with the glowing shoes! Exactly as I drew them!"
+},
+"d09": {
+"who": "juno",
+"text": "You drew me?"
+},
+"d10": {
+"who": "maestro",
+"text": "La viaggiatrice. A woman with a lantern on her eyes and a talking box in her hand. I thought I was finally going mad."
+},
+"d11": {
+"who": "juno",
+"text": "SIBYL, are you hearing this?"
+},
+"d12": {
+"who": "sibyl",
+"text": "I am. I would like to file a paradox report."
+},
+"d13": {
+"who": "maestro",
+"text": "Here. The Scientia Temporis. Everything I know about light, gears and time. Take it somewhere it will not burn."
+},
+"d14": {
+"who": "juno",
+"text": "Come with me! I can get you out of\u2014"
+},
+"d15": {
+"who": "maestro",
+"text": "No, no. Someone must stay and invent things badly, so that someone else can invent them well. Now go!"
+},
+"d16": {
+"who": "count",
+"text": "Engineers! The witch is in my dungeon! Fire the trebuchet at her!"
+},
+"d17": {
+"who": "engineer",
+"text": "My lord, the trebuchet points at the village. The dungeon is behind us."
+},
+"d18": {
+"who": "count",
+"text": "Then fire it BACKWARDS!"
+},
+"d19": {
+"who": "engineer",
+"text": "My lord, that is not how... oh no."
+},
+"d20": {
+"who": "count",
+"text": "Write that down in the chronicle as an accident."
+},
+"d21": {
+"who": "maestro",
+"text": "That fool! This whole castle is made of oak and pride. Run, signorina! RUN!"
+},
+"d22": {
+"who": "sibyl",
+"text": "Structural collapse in three minutes. I recommend leaving at roughly the speed of panic."
+},
+"e01": {
+"who": "sibyl",
+"text": "The portcullis is dropping! Slide under it! Roll, Juno, roll!"
+},
+"e02": {
+"who": "juno",
+"text": "Hot, hot, hot, hot!"
+},
+"e03": {
+"who": "sibyl",
+"text": "Ninety seconds. The great hall roof is going."
+},
+"e04": {
+"who": "sibyl",
+"text": "Thirty seconds! Faster!"
+},
+"e05": {
+"who": "juno",
+"text": "Look! Up there! The flying machine!"
+},
+"e06": {
+"who": "juno",
+"text": "He actually built it."
+},
+"e07": {
+"who": "sibyl",
+"text": "And it actually flies. Don't tell history."
+},
+"e08": {
+"who": "juno",
+"text": "Take me home, SIBYL."
+},
+"e09": {
+"who": "sibyl",
+"text": "Recall in three. Two. Say goodbye to the pig."
+},
+"e10": {
+"who": "juno",
+"text": "Bye, pig."
+},
+"f01": {
+"who": "sibyl",
+"text": "Welcome back. You smell like smoke and pig."
+},
+"f02": {
+"who": "juno",
+"text": "And I have the Valtorre Scroll."
+},
+"f03": {
+"who": "sibyl",
+"text": "Scanning. Light theory. Gear trains. A clock with no pendulum. And... page forty-two."
+},
+"f04": {
+"who": "juno",
+"text": "What's on page forty-two?"
+},
+"f05": {
+"who": "sibyl",
+"text": "A schematic. A flip phone, with a time resonator where the battery should be. Labelled: for la viaggiatrice, so that she can come and find me."
+},
+"f06": {
+"who": "juno",
+"text": "Wait. He designed my phone? But I built my phone from..."
+},
+"f07": {
+"who": "sibyl",
+"text": "From an anonymous medieval sketch you found in a museum archive. Yes. Congratulations. You are a closed time loop."
+},
+"f08": {
+"who": "juno",
+"text": "I need to sit down."
+},
+"f09": {
+"who": "sibyl",
+"text": "You need to change out of that hoodie."
+},
+"f10": {
+"who": "sibyl",
+"text": "Juno. There is a chicken in the lab."
+},
+"f11": {
+"who": "juno",
+"text": "There's a WHAT?"
+},
+"f12": {
+"who": "sibyl",
+"text": "It followed you through the portal. It has also just ordered forty pizzas. With my card."
+},
+"f13": {
+"who": "chicken",
+"text": "Bawk."
+},
+"bk_peas0": {
+"who": "peasant",
+"text": "Witch!"
+},
+"bk_peas1": {
+"who": "peasantf",
+"text": "Get the witch!"
+},
+"bk_peas2": {
+"who": "peasant",
+"text": "Begone, demon!"
+},
+"bk_peas3": {
+"who": "peasantf",
+"text": "It has a glowing stick!"
+},
+"bk_peas4": {
+"who": "peasant",
+"text": "Burn it! Wait, no, it burns US!"
+},
+"bk_peas5": {
+"who": "peasant",
+"text": "For Valtorre!"
+},
+"bk_peas6": {
+"who": "peasantf",
+"text": "Witch! Witch! Witch!"
+},
+"bk_peas7": {
+"who": "peasant",
+"text": "Saints preserve us!"
+},
+"bk_ko0": {
+"who": "peasant",
+"text": "Ooh... pretty lights..."
+},
+"bk_ko1": {
+"who": "peasant",
+"text": "I see stars... and a goat..."
+},
+"bk_ko2": {
+"who": "peasant",
+"text": "Tell my pig I loved him."
+},
+"bk_flee0": {
+"who": "peasantf",
+"text": "Run! It's the witch!"
+},
+"bk_flee1": {
+"who": "peasant",
+"text": "Mamma mia! Run!"
+},
+"bk_guard0": {
+"who": "guard",
+"text": "Hold the line!"
+},
+"bk_guard1": {
+"who": "guard2",
+"text": "Shields up!"
+},
+"bk_guard2": {
+"who": "guard",
+"text": "There she is!"
+},
+"bk_guard3": {
+"who": "guard2",
+"text": "In the name of the Count!"
+},
+"bk_guard4": {
+"who": "guard",
+"text": "Surrender, sorceress!"
+},
+"bk_arch0": {
+"who": "guard2",
+"text": "Archers, loose!"
+},
+"bk_arch1": {
+"who": "guard2",
+"text": "She's on the wall!"
+},
+"bk_knight0": {
+"who": "knight",
+"text": "Face me, witch!"
+},
+"bk_knight1": {
+"who": "knight",
+"text": "My armour laughs at your light!"
+},
+"bk_fire0": {
+"who": "guard",
+"text": "Fire! Save the wine!"
+},
+"bk_fire1": {
+"who": "peasant",
+"text": "The witch did this!"
+},
+"bk_fire2": {
+"who": "guard2",
+"text": "Every man for himself!"
+},
+"bk_hurt0": {
+"who": "juno",
+"text": "Ow! Medieval healthcare is not an option."
+},
+"bk_hurt1": {
+"who": "juno",
+"text": "That's going to bruise."
+},
+"bk_hurt2": {
+"who": "juno",
+"text": "Okay, that hurt."
+},
+"bk_hurt3": {
+"who": "juno",
+"text": "Rude!"
+},
+"bk_heat0": {
+"who": "juno",
+"text": "Blaster's overheating!"
+},
+"bk_heat1": {
+"who": "juno",
+"text": "Too hot, venting!"
+},
+"bk_pulse0": {
+"who": "juno",
+"text": "Stun pulse!"
+},
+"bk_pulse1": {
+"who": "juno",
+"text": "Everybody, take a nap!"
+},
+"bk_kill0": {
+"who": "juno",
+"text": "Nap time."
+},
+"bk_kill1": {
+"who": "juno",
+"text": "Sweet dreams."
+},
+"bk_kill2": {
+"who": "juno",
+"text": "Stunned. You're welcome."
+},
+"bk_kill3": {
+"who": "juno",
+"text": "That's a knock-out."
+},
+"bk_respawn": {
+"who": "sibyl",
+"text": "Reloading from the last checkpoint. Let's call that a practice run."
+},
+"bk_cp": {
+"who": "sibyl",
+"text": "Checkpoint saved."
+},
+"bk_locked": {
+"who": "juno",
+"text": "Locked. It needs some kind of fancy key."
+},
+"bk_closed": {
+"who": "juno",
+"text": "Barred from the inside."
+},
+"bk_food": {
+"who": "juno",
+"text": "Mm. Organic. Very organic."
+},
+"bk_bell": {
+"who": "sibyl",
+"text": "Direct hit on the bell! He's dazed!"
+},
+"bk_reflect": {
+"who": "sibyl",
+"text": "It's bouncing off his breastplate! Get behind him!"
+},
+"bk_back": {
+"who": "sibyl",
+"text": "His back is open! Now!"
+},
+"bk_zip": {
+"who": "juno",
+"text": "Wheeeee!"
+},
+"bk_moat": {
+"who": "juno",
+"text": "Moat water. That's... going to stay with me."
+},
+"bk_bullseye": {
+"who": "juno",
+"text": "Three bullseyes. Robin Hood's got nothing on me."
+},
+"bk_bighead": {
+"who": "sibyl",
+"text": "Big head mode enabled. Medically inadvisable."
+},
+"i_monitor0": {
+"who": "juno",
+"text": "Seventeen thousand lines of code, and one comment. It just says: sorry."
+},
+"i_monitor1": {
+"who": "sibyl",
+"text": "Rocca di Valtorre. Destroyed in twelve eighty-three. The records only say: an incident involving a trebuchet."
+},
+"i_monitor2": {
+"who": "sibyl",
+"text": "That's my good side."
+},
+"i_mug": {
+"who": "juno",
+"text": "World's Okayest Physicist. Accurate."
+},
+"i_server": {
+"who": "sibyl",
+"text": "Please don't touch my brain."
+},
+"i_printer": {
+"who": "juno",
+"text": "It's printing a tiny castle. I don't remember asking it to do that."
+},
+"i_scope": {
+"who": "juno",
+"text": "The oscilloscope says the resonator is stable. The oscilloscope is an optimist."
+},
+"i_bed": {
+"who": "juno",
+"text": "No time to sleep. Sleep is for people with fewer paradoxes."
+},
+"i_poster": {
+"who": "juno",
+"text": "Time waits for no one. Except me, apparently."
+},
+"i_steve": {
+"who": "juno",
+"text": "Steve's PC Repair. He replaced my CMOS battery once. Fair price. Then he stared at the door like someone was about to walk in with a briefcase."
+},
+"i_cat": {
+"who": "juno",
+"text": "Hey, Pixel. Guard the lab while I'm gone. No chewing the cables."
+},
+"i_door": {
+"who": "juno",
+"text": "Nope. Wrong century."
+},
+"i_whiteboard": {
+"who": "juno",
+"text": "Don't forget: change clothes. Huh."
+},
+"i_fridge": {
+"who": "juno",
+"text": "Volt Cola. Two hundred milligrams of caffeine, and regret."
+},
+"i_books": {
+"who": "juno",
+"text": "Time Travel for Dummies. Third edition. The first two haven't been written yet. Or have been. Ugh, tenses."
+},
+"i_ring": {
+"who": "sibyl",
+"text": "Prototype one. It sent a sandwich to nineteen ninety-seven. We never found it."
+},
+"i_plant": {
+"who": "juno",
+"text": "Gerald. My oldest friend. Mostly because he can't leave."
+},
+"i_vacuum": {
+"who": "sibyl",
+"text": "The robot vacuum has achieved sentience. It is choosing not to use it."
+},
+"i_sibyl": {
+"who": "sibyl",
+"text": "Yes? I'm busy calculating how many ways tonight can go wrong. Currently four hundred and twelve."
+},
+"i_scarecrow": {
+"who": "juno",
+"text": "Straw hat, blue tunic. Honestly? Very twenty twenty-six street style."
+},
+"i_milkstool": {
+"who": "juno",
+"text": "A three-legged milking stool. Peak furniture technology."
+},
+"i_tavern": {
+"who": "juno",
+"text": "The Drunken Dragon. Beer, beds, no witches. Rude."
+},
+"i_wanted": {
+"who": "juno",
+"text": "WITCH, maybe. Reward: three chickens. That's... actually kind of flattering."
+},
+"i_churchbell": {
+"who": "sibyl",
+"text": "Please don't ring the church bell. People here take bells very seriously."
+},
+"i_well": {
+"who": "juno",
+"text": "A wishing well. I wish for indoor plumbing."
+},
+"i_stocks": {
+"who": "juno",
+"text": "The stocks. The medieval comment section."
+},
+"i_anvil": {
+"who": "juno",
+"text": "Hot iron, hammers and sparks. Basically a medieval 3D printer."
+},
+"i_cat_town": {
+"who": "juno",
+"text": "Hey, kitty. You look exactly like Pixel. Great, great, great, great grandma?"
+},
+"i_armory": {
+"who": "juno",
+"text": "Swords, spears, maces. And not one safety manual."
+},
+"i_horse": {
+"who": "juno",
+"text": "Easy, horse. Sorry about the noise. And the lasers."
+},
+"i_well2": {
+"who": "juno",
+"text": "Another well. Still no plumbing."
+},
+"i_throne": {
+"who": "juno",
+"text": "Sitting on the throne would be a power move. I'm not going to. Probably."
+},
+"i_armour": {
+"who": "juno",
+"text": "An empty suit of armour. Definitely not going to come alive. Definitely."
+},
+"i_sketch_heli": {
+"who": "juno",
+"text": "A helicopter. In twelve eighty-one. He's two centuries ahead of da Vinci."
+},
+"i_sketch_phone": {
+"who": "juno",
+"text": "That's a flip phone. Why is there a flip phone?"
+},
+"i_sketch_clock": {
+"who": "sibyl",
+"text": "A mechanical escapement. Decades ahead of schedule."
+},
+"i_sketch_laser": {
+"who": "juno",
+"text": "Light that bites but does not kill. That's my blaster. That is literally my blaster."
+},
+"i_sketch_traveller": {
+"who": "juno",
+"text": "That's me. Hoodie, visor, everything. Dated today."
+},
+"i_sketch_trebuchet": {
+"who": "juno",
+"text": "NOT with fire. Underlined three times. Foreshadowing much?"
+},
+"i_globe": {
+"who": "juno",
+"text": "A round globe. So much for the flat earth myth."
+},
+"i_cauldron": {
+"who": "juno",
+"text": "Smells like stew. And slightly like eye of newt."
+},
+"i_cat_kitchen": {
+"who": "juno",
+"text": "Another orange cat. They really do run this place."
+},
+"i_dice": {
+"who": "juno",
+"text": "Loaded dice. Some things never change."
+},
+"i_skeleton": {
+"who": "juno",
+"text": "Hello, Ser Rattlebones. Still waiting on lunch?"
+},
+"i_flyer": {
+"who": "juno",
+"text": "A model flying machine. Canvas, wood, and very big dreams."
+},
+"i_dungeongate": {
+"who": "juno",
+"text": "A golden lock shaped like a clock face. That needs the clock key."
+},
+"col_cmos": {
+"who": "juno",
+"text": "A CR2032 coin cell. How did a CMOS battery get to twelve eighty-three? Somewhere, a computer wants to remember the date."
+},
+"col_earbud": {
+"who": "juno",
+"text": "My earbud! I've been looking for that since twenty twenty-four."
+},
+"col_sunglasses": {
+"who": "juno",
+"text": "My sunglasses. The peasants probably think these are demon eyes."
+},
+"col_tamagotchi": {
+"who": "juno",
+"text": "A Tamagotchi. Still alive. Somehow."
+},
+"col_vr": {
+"who": "juno",
+"text": "A VR headset. Imagine showing virtual reality to a medieval monk. Actually, don't."
+},
+"col_phonecase": {
+"who": "juno",
+"text": "My glitter phone case! The cook was using it as a spoon rest."
+},
+"col_gameboy": {
+"who": "juno",
+"text": "A handheld console. The jailer's high score is... honestly impressive."
+},
+"col_fidget": {
+"who": "juno",
+"text": "A fidget spinner. Of course it ended up in the past. It always felt like it came from the past."
+}
+},
+"names": {
+"juno": "JUNO",
+"sibyl": "SIBYL",
+"maestro": "MAESTRO LORENZO",
+"peasant": "BARTOLO",
+"peasantf": "VILLAGER",
+"guard": "GUARD",
+"guard2": "GUARD",
+"knight": "KNIGHT",
+"bruno": "SER BRUNO",
+"count": "COUNT OTTONE",
+"engineer": "ENGINEER",
+"jailer": "GRIMALDO",
+"beppe": "BEPPE",
+"chicken": "CHICKEN"
+},
+"colors": {
+"juno": "#5ff5d8",
+"sibyl": "#c9a0ff",
+"maestro": "#ffcf6b",
+"peasant": "#d9b48a",
+"peasantf": "#e8c39a",
+"guard": "#ff8a7a",
+"guard2": "#ff9e8a",
+"knight": "#c8ccd2",
+"bruno": "#e0b23a",
+"count": "#d58cff",
+"engineer": "#b8d0a0",
+"jailer": "#c0a080",
+"beppe": "#a0c0e0",
+"chicken": "#ffffff"
+}
+}
