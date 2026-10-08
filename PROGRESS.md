@@ -27,7 +27,8 @@ Live: https://loriens22.github.io/castle-time-game/ (gh-pages branch, deployed b
 - DONE: live URL checked in headless Chrome. Desktop: title → New Game → lab. Mobile 844x390 with touch: title → lab, touch UI showing. No console errors.
 - DONE: screenshots in `screenshots/` (01–08)
 - DONE: HUD centring, combat balance (at most 2 melee attackers at once), spire checkpoints face up the ledge
-- Polish: terrain colour/fog, more easter-egg checks
+- DONE: discovery counter now shows N / total (56, worked out from the dialogue table); deployed and live-checked 05:21 Sofia
+- Optional later: terrain colour/fog tuning, full real-device playtest
 
 ## How to resume
 - Test helpers (user args after `--`):
