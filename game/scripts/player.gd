@@ -39,6 +39,7 @@ var heat := 0.0
 var overheated := 0.0
 var pulse_cd := 0.0
 var fire_cd := 0.0
+var fire_buf := 0.0   # remembers a quick click/tap so it is never lost between physics frames
 var since_fire := 9.0
 var since_hurt := 9.0
 var invuln := 0.0
@@ -120,6 +121,7 @@ func teleport(pos: Vector3, y := INF) -> void:
 # ------------------------------------------------------------------ input
 func _unhandled_input(e: InputEvent) -> void:
 	if input_locked or G.paused: return
+	if e.is_action_pressed("fire"): fire_buf = 0.25
 	if e is InputEventMouseMotion and Input.mouse_mode == Input.MOUSE_MODE_CAPTURED:
 		var s: float = 0.0022 * G.settings["sens"]
 		yaw -= e.relative.x * s
@@ -280,7 +282,9 @@ func _physics_process(dt: float) -> void:
 			Audio.sfx("step_" + surf, -14.0, randf_range(0.9, 1.1))
 	# combat
 	if weapon and not input_locked and not dead:
+		fire_buf = maxf(0.0, fire_buf - get_physics_process_delta_time())
 		if Input.is_action_pressed("fire") or touch_fire: try_fire()
+		elif fire_buf > 0.0 and fire_cd <= 0.0: fire_buf = 0.0; try_fire()
 		if Input.is_action_just_pressed("pulse"): try_pulse()
 	if not input_locked and Input.is_action_just_pressed("interact"): do_interact()
 

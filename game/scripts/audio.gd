@@ -16,7 +16,11 @@ func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
 	for b in ["Music", "SFX", "Voice"]:
 		if AudioServer.get_bus_index(b) == -1:
-			AudioServer.add_bus(); var i := AudioServer.bus_count - 1
+			# Buses normally come from res://default_bus_layout.tres. Fallback: add at an explicit index.
+			# add_bus() with the default position -1 breaks Godot's web "Sample" bus mirror (the new bus is
+			# inserted before Master in JS, Master gets rerouted into it and nothing reaches the speakers).
+			var i := AudioServer.bus_count
+			AudioServer.add_bus(i)
 			AudioServer.set_bus_name(i, b); AudioServer.set_bus_send(i, "Master")
 	music_a = _mk2d("Music"); music_b = _mk2d("Music"); vo_player = _mk2d("Voice"); amb_player = _mk2d("SFX")
 	for i in 14: pool2d.append(_mk2d("SFX"))
