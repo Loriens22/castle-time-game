@@ -234,9 +234,11 @@ func _process(dt: float) -> void:
 	# subtitle size follows the screen
 	var vs := root.size
 	sub_panel.custom_minimum_size.x = min(vs.x - 40, 980)
-	sub_panel.position.x = -sub_panel.custom_minimum_size.x / 2
 	sub_lbl.custom_minimum_size.x = sub_panel.custom_minimum_size.x - 30
-	sub_panel.position.y = -sub_panel.size.y - (40.0 if not touch.visible or cutscene_on else 30.0) - (lb_bot.size.y * 0.15)
+	sub_panel.size.x = sub_panel.custom_minimum_size.x
+	# (absolute coordinates: 'position' ignores anchors)
+	var sub_y := vs.y - sub_panel.size.y - (lb_bot.size.y * 0.55 if cutscene_on else (150.0 if touch.visible else 40.0))
+	sub_panel.position = Vector2((vs.x - sub_panel.size.x) * 0.5, sub_y)
 	rotate_hint.visible = G.is_touch and vs.y > vs.x and title_box.visible
 
 func _touch_enabled() -> bool:

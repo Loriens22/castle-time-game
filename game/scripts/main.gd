@@ -44,6 +44,9 @@ func _debug_args() -> void:
 			_do_later(p2[0], float(p2[1]) if p2.size() > 1 else 2.0)
 		elif arg == "--touch":
 			G.is_touch = true
+		elif arg.begins_with("--hold="):   # --hold=action@start-end
+			var hp := arg.substr(7).split("@"); var tt := hp[1].split("-")
+			_hold_later(hp[0], float(tt[0]), float(tt[1]))
 		elif arg.begins_with("--walk="):
 			_walk_later(arg.substr(7))
 
@@ -227,3 +230,9 @@ func load_level(name: String, args := {}) -> void:
 	level_holder.add_child(lv)
 	G.ui.show_loading(false)
 	loading = false
+
+func _hold_later(action: String, t0: float, t1: float) -> void:
+	await get_tree().create_timer(t0, true, false, true).timeout
+	Input.action_press(action)
+	await get_tree().create_timer(t1 - t0, true, false, true).timeout
+	Input.action_release(action)
