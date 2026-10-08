@@ -37,3 +37,8 @@ Live: https://loriens22.github.io/castle-time-game/ (gh-pages branch, deployed b
   - `--walk=x,z[,j|r|w];...`, `--hold=action@t0-t1`
   - `--noenemies`, `--touch`, `--movers`
 - `tools/` (Godot/Blender binaries) is git-ignored
+
+## Audio fix (8 Oct, 16:30 Sofia)
+- Root cause of "no sound" on the web: `audio.gd` created the Music/SFX/Voice buses at runtime with `AudioServer.add_bus()`, which uses position -1. Godot's web "Sample" playback copies the buses into Web Audio, and `Bus.addAt(-1)` → `move(id, -1)` → `splice(-2)` puts each new bus *in front of* Master. Master is then sent into it, so the graph loops and nothing reaches `ctx.destination`. All audio went silent on every browser.
+- Fix: a static `game/default_bus_layout.tres` (Master/Music/SFX/Voice), and the fallback `add_bus(explicit index)`; iOS `navigator.audioSession.type="playback"`; quick fire clicks are buffered.
+- Check: `python3 test/audiocheck.py URL [--gesture] [--mobile] [--gargs "--level=world --cp=farm"]` (hooks AudioContext, buffer-source starts, RMS at the destination)

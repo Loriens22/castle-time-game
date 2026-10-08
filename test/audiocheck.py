@@ -42,7 +42,7 @@ HOOK = r"""
 ap = argparse.ArgumentParser()
 ap.add_argument('url'); ap.add_argument('--gesture', action='store_true'); ap.add_argument('--wait', type=float, default=60)
 ap.add_argument('--clicks', default=''); ap.add_argument('--keys', default=''); ap.add_argument('--mobile', action='store_true')
-ap.add_argument('--all', action='store_true'); ap.add_argument('--shots', default='', help='t,t,... -> /tmp/au_<t>.png')
+ap.add_argument('--all', action='store_true'); ap.add_argument('--gargs', default='', help='debug engine args injected into index.html, e.g. "--level=world --cp=farm"'); ap.add_argument('--shots', default='', help='t,t,... -> /tmp/au_<t>.png')
 a = ap.parse_args()
 ev = []
 for c in filter(None, a.clicks.split(';')):
@@ -54,7 +54,7 @@ step = 2.0; t = step
 while t <= a.wait: ev.append((t, 'probe', None)); t += step
 ev.sort(key=lambda e: e[0])
 args = ['--use-angle=swiftshader', '--enable-unsafe-swiftshader', '--ignore-gpu-blocklist']
-if not a.gesture: args.append('--autoplay-policy=no-user-gesture-required')
+args.append('--autoplay-policy=' + ('user-gesture-required' if a.gesture else 'no-user-gesture-required'))
 with sync_playwright() as p:
     b = p.chromium.launch(executable_path='/usr/bin/google-chrome', headless=True, args=args)
     if a.mobile:
@@ -63,6 +63,12 @@ with sync_playwright() as p:
     else:
         ctx = b.new_context(viewport={'width': 1280, 'height': 720})
     ctx.add_init_script(HOOK)
+    if a.gargs:
+        import json as _j
+        def _rw(route):
+            r = route.fetch(); body = r.text().replace('"args":[]', '"args":' + _j.dumps(['--'] + a.gargs.split()))
+            route.fulfill(response=r, body=body)
+        ctx.route('**/index.html', _rw); ctx.route(a.url.rstrip('/') + '/', _rw)
     pg = ctx.new_page(); logs = []; bad = []
     pg.on('console', lambda m: logs.append((m.type, m.text)))
     pg.on('pageerror', lambda e: logs.append(('pageerror', str(e))))
