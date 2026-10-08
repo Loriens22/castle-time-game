@@ -60,6 +60,7 @@ func _input(e: InputEvent) -> void:
 			if cutscene:
 				if G.paused: return
 				var hb := _hit_button(e.position)
+				G.tlog("cutscene tap at %s -> %s" % [e.position.round(), hb if hb != "" else "next line"])
 				if hb == "pause": G.main.toggle_pause()
 				elif hb == "skip": G.ui.request_skip()
 				else: G.ui.request_advance()

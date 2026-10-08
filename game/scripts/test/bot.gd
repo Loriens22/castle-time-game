@@ -57,7 +57,9 @@ func _physics_process(dt: float) -> void:
 	if lv == null or G.main.loading: return
 	if lv.get("title_mode"):
 		if G.save["flags"].get("finished", false) and started:
-			if not done: done = true; _log("DONE - back on the title screen after the credits. deaths=%d kos=%d" % [G.save["deaths"], G.save["kos"]])
+			if not done:
+				done = true; _log("DONE - back on the title screen after the credits. deaths=%d kos=%d" % [G.save["deaths"], G.save["kos"]])
+				if not G.is_web: get_tree().create_timer(3.0, true, false, true).timeout.connect(get_tree().quit)
 			return
 		if not started:
 			started = true; _log("title -> New Game"); G.main.new_game()
@@ -96,6 +98,7 @@ func _press(a: String, hold := 0.12) -> void:
 	get_tree().create_timer(hold, true, true, true).timeout.connect(func(): Input.action_release(a))
 
 func _touch(pos: Vector2) -> void:
+	pos = get_viewport().get_final_transform() * pos   # canvas -> window coords (a real finger is in window coords)
 	var e := InputEventScreenTouch.new(); e.index = 3; e.position = pos; e.pressed = true
 	Input.parse_input_event(e)
 	var r := InputEventScreenTouch.new(); r.index = 3; r.position = pos; r.pressed = false
