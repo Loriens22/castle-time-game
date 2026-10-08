@@ -67,7 +67,7 @@ Then it's back to 2026 for a **time-loop twist**, followed by the credits and a 
 | Stun pulse | Q | Y / LB | PULSE |
 | Interact | E / F | X | USE (shows up next to things) |
 | Walk | Alt | – | – |
-| Pause | Esc / P | Start | ❚❚ (top centre) |
+| Pause | Esc / P | Start | ❚❚ (top right) |
 | Skip cutscene | Enter / Esc | A | Tap |
 
 ## How it was made

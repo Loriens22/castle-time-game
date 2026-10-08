@@ -11,9 +11,13 @@ var fire_id := -1
 var fire_last := Vector2.ZERO
 var btn_ids := {}
 var buttons := {}   # name -> {pos, r, label}
-var use_visible := false
+var use_visible := false:
+	set(v):
+		if v != use_visible: use_visible = v; queue_redraw()
 var pulse_frac := 1.0
-var cutscene := false
+var cutscene := false:
+	set(v):
+		if v != cutscene: cutscene = v; queue_redraw()
 var scale_f := 1.0
 var font: Font
 
@@ -35,7 +39,7 @@ func _layout() -> void:
 		"roll": {"pos": br + Vector2(-60, -150) * scale_f, "r": r * 0.75, "label": "ROLL"},
 		"pulse": {"pos": br + Vector2(-190, -100) * scale_f, "r": r * 0.75, "label": "PULSE"},
 		"use": {"pos": br + Vector2(-110, -260) * scale_f, "r": r * 0.8, "label": "USE"},
-		"pause": {"pos": Vector2(s.x * 0.5, 44 * scale_f), "r": 34 * scale_f, "label": "II"},
+		"pause": {"pos": Vector2(s.x - 54 * scale_f, 50 * scale_f), "r": 34 * scale_f, "label": "II"},
 	}
 	queue_redraw()
 
@@ -112,7 +116,11 @@ func release_all() -> void:
 	btn_ids.clear(); stick_id = -1; look_id = -1; fire_id = -1
 	if G.player: G.player.touch_move = Vector2.ZERO; G.player.touch_fire = false
 
+var _laid_size := Vector2.ZERO
 func _process(_dt: float) -> void:
+	var ps: Vector2 = get_parent().size if get_parent() is Control else get_viewport_rect().size
+	if size != ps: size = ps
+	if size != _laid_size: _laid_size = size; _layout()
 	if G.player:
 		var pf: float = 1.0 - G.player.pulse_cd / Player.PULSE_CD
 		if abs(pf - pulse_frac) > 0.01: pulse_frac = pf; queue_redraw()
